@@ -6,6 +6,7 @@ ADD requirements.txt /app/
 RUN pip install -r requirements.txt
 
 ADD /src/ /app/
+ADD /tst/ /app/
 
 # EXPOSE 5000
 # For developing purposes we may use the werkzeug embedded web server of Flask

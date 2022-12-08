@@ -41,7 +41,11 @@ if __name__ == '__main__':
     # If we're using gunicorn (WSGI production web server) these parameters are not applied
     try:
         print("Initializing...", flush=True)
-
+        with open('tst/input.txt') as f:
+            lines = f.readlines()
+            print(lines, flush=True)
+            
+            
     except RuntimeError:
         print("Finishing...", flush=True)
 
