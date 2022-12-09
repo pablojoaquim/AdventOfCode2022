@@ -22,6 +22,18 @@ import signal
 # ******************************************************************************
 running = True
 
+class Dwarfs:
+    def __init__(self, calories):
+        self.calories = calories
+    
+    def addCalories(self, calories):
+        self.calories += calories
+    
+    def getCalories(self):
+        return self.calories
+    
+calories = []
+    
 # ******************************************************************************
 # * Function Definitions
 # ******************************************************************************
@@ -40,10 +52,20 @@ if __name__ == '__main__':
     # These parameters are for the werkzeug embedded web server of Flask
     # If we're using gunicorn (WSGI production web server) these parameters are not applied
     try:
+        dwarfIdx = 0        
         print("Initializing...", flush=True)
         with open('tst/input.txt') as f:
-            lines = f.readlines()
-            print(lines, flush=True)
+            for line in f:           
+                if(line != "\n"):
+                    currCalories = int(line)
+                    if(len(calories)<=dwarfIdx):
+                        calories.append(0)
+                    calories[dwarfIdx] += currCalories
+                    # dwarf = Dwarfs(calories)
+                else:
+                    dwarfIdx += 1
+                # print(dwarf.getCalories(), flush=True)
+                print(calories, flush=True)
             
             
     except RuntimeError:
