@@ -32,6 +32,32 @@ class Dwarf:
     def getCalories(self):
         return self.calories
 
+class DwarfWinners:
+    def __init__(self):
+        self.winners = [0,0,0]
+
+    def challenge(self, calories):
+        if(calories>self.winners[0]):
+            if(self.winners[0]>self.winners[1]):
+                if(self.winners[1]>self.winners[2]):
+                    self.winners[2] = self.winners[1]
+                self.winners[1] = self.winners[0]
+            self.winners[0] = calories
+        else:
+            if(calories>self.winners[1]):
+                if(self.winners[1]>self.winners[2]):
+                    self.winners[2] = self.winners[1]
+                self.winners[1] = calories
+            else:
+                if(calories>self.winners[2]):
+                    self.winners[2] = calories
+                    
+    def getWinners(self):
+        return self.winners
+    
+    def getWinnersTotalCalories(self):
+        return self.winners[0] + self.winners[1] + self.winners[2]
+    
 calories = []
 
 # ******************************************************************************
@@ -77,14 +103,19 @@ if __name__ == '__main__':
                     # Increment the dwarf index
                     dwarfIdx += 1
 
-        dwarfWinnerCalories = 0
+        dwarfWinners = DwarfWinners()
         
         for dwarfIdx in range(len(calories)):
-            if(dwarfWinnerCalories <= calories[dwarfIdx].getCalories()):
-                dwarfWinnerCalories = calories[dwarfIdx].getCalories()
-            print(calories[dwarfIdx].getCalories(), flush=True)
+            dwarfWinners.challenge(calories[dwarfIdx].getCalories())
+        #     if(dwarfWinnerCalories <= calories[dwarfIdx].getCalories()):
+        #         dwarfWinnerCalories = calories[dwarfIdx].getCalories()
+        #     print(calories[dwarfIdx].getCalories(), flush=True)
             
-        print("And the winner is:" + str(dwarfWinnerCalories), flush=True)
+        # print("And the winner is:" + str(dwarfWinnerCalories), flush=True)
+        print(dwarfWinners.getWinners(), flush=True)
+        
+        print("And the winner is:" + str(dwarfWinners.getWinnersTotalCalories()), flush=True)
+        
 
     except RuntimeError:
         print("Finishing...", flush=True)
