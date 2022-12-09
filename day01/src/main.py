@@ -22,20 +22,24 @@ import signal
 # ******************************************************************************
 running = True
 
-class Dwarfs:
+class Dwarf:
     def __init__(self, calories):
         self.calories = calories
-    
+
     def addCalories(self, calories):
         self.calories += calories
-    
+
     def getCalories(self):
         return self.calories
-    
+
 calories = []
-    
+
 # ******************************************************************************
 # * Function Definitions
+# ******************************************************************************
+
+# ******************************************************************************
+# * @brief The handler for the termination signal handler
 # ******************************************************************************
 def sigintHandler(signum, frame):
     global running
@@ -43,31 +47,38 @@ def sigintHandler(signum, frame):
     print('Signal handler called with signal', signum)
     raise RuntimeError("Terminating...")
 
+
 # ******************************************************************************
 # * @brief The main entry point
 # ******************************************************************************
 if __name__ == '__main__':
     signal.signal(signal.SIGINT, sigintHandler)
-    
+
     # These parameters are for the werkzeug embedded web server of Flask
     # If we're using gunicorn (WSGI production web server) these parameters are not applied
     try:
-        dwarfIdx = 0        
+        dwarfIdx = 0
         print("Initializing...", flush=True)
+
+        # Open the file with the inputs
         with open('tst/input.txt') as f:
-            for line in f:           
+            # Move along the lines of the input file
+            for line in f:
+                # The separator is an EOL character
                 if(line != "\n"):
+                    # Obtain the calories string and convert it to integer
                     currCalories = int(line)
-                    if(len(calories)<=dwarfIdx):
-                        calories.append(0)
-                    calories[dwarfIdx] += currCalories
-                    # dwarf = Dwarfs(calories)
+                    # If the entry in the list is not available create a new one
+                    if(len(calories) <= dwarfIdx):
+                        calories.append(Dwarf(0))
+                    # Add the calories to the current dwarf calories counter
+                    calories[dwarfIdx].addCalories(currCalories)
                 else:
+                    # Increment the dwarf index
                     dwarfIdx += 1
-                # print(dwarf.getCalories(), flush=True)
-                print(calories, flush=True)
-            
-            
+
+        for dwarfIdx in range(len(calories)):
+            print(calories[dwarfIdx].getCalories(), flush=True)
+
     except RuntimeError:
         print("Finishing...", flush=True)
-
