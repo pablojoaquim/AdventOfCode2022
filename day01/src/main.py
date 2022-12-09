@@ -77,8 +77,14 @@ if __name__ == '__main__':
                     # Increment the dwarf index
                     dwarfIdx += 1
 
+        dwarfWinnerCalories = 0
+        
         for dwarfIdx in range(len(calories)):
+            if(dwarfWinnerCalories <= calories[dwarfIdx].getCalories()):
+                dwarfWinnerCalories = calories[dwarfIdx].getCalories()
             print(calories[dwarfIdx].getCalories(), flush=True)
+            
+        print("And the winner is:" + str(dwarfWinnerCalories), flush=True)
 
     except RuntimeError:
         print("Finishing...", flush=True)
