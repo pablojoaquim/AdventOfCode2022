@@ -55,13 +55,13 @@ if __name__ == '__main__':
             for line in f:
                 # The separator is an EOL character
                 if(line != "\n"):
+                    # Remove the EOL character of every line
+                    line = line.replace('\n', '')               
+
                     # Check if there's no instructions in the row
                     if("move" not in line):
                         # Check if there's no column indexes in the row
-                        if ("1" not in line):
-                            # Remove the EOL character of every line
-                            line = line.replace('\n', '')                            
-                            
+                        if ("1" not in line):                            
                             # Parse the rows
                             row = list() 
                             for i in range(1, len(line), 4):
@@ -75,9 +75,13 @@ if __name__ == '__main__':
                             stacks = np.transpose(stacks)
                             print("stacks:" + str(stacks), flush=True)
                     else:
+                        # Remove unnecesary words
+                        line = line.replace("move ", '')
+                        line = line.replace("from ", '')
+                        line = line.replace("to ", '')
                         # Parse the instructions
-                        
-                        print("Instructions found:" + str(line), flush=True)
+                        instructions = line.split(" ")
+                        print("Instructions found:" + str(instructions), flush=True)
 
 
         # print("sectionOverlap sum:" + str(sectionOverlap), flush=True)
