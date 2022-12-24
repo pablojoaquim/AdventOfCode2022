@@ -28,6 +28,55 @@ running = True
 # ******************************************************************************
 
 # ******************************************************************************
+# * @brief Matrix transpose function
+# ******************************************************************************
+def transpose(matrix):
+    rows = len(matrix)
+    columns = len(matrix[0])
+
+    matrix_T = []
+    for j in range(columns):
+        row = []
+        for i in range(rows):
+           row.append(matrix[i][j])
+        matrix_T.append(row)
+
+    return matrix_T
+
+# ******************************************************************************
+# * @brief Revert the elements on each row of the matrix
+# ******************************************************************************
+def revertRows(matrix):
+    rows = len(matrix)
+    columns = len(matrix[0])
+
+    matrix_T = []
+    for i in range(rows):
+        row = []
+        for j in range(columns-1, -1, -1):
+           row.append(matrix[i][j])
+        matrix_T.append(row)
+
+    return matrix_T
+
+# ******************************************************************************
+# * @brief Remove unnecesary elements of the matrix
+# ******************************************************************************
+def removeElems(matrix, e):
+    rows = len(matrix)
+    columns = len(matrix[0])
+
+    matrix_T = []
+    for i in range(rows):
+        row = []
+        for j in range(columns):
+            if(matrix[i][j] != e):
+                row.append(matrix[i][j])
+        matrix_T.append(row)
+
+    return matrix_T
+
+# ******************************************************************************
 # * @brief The handler for the termination signal handler
 # ******************************************************************************
 def sigintHandler(signum, frame):
@@ -70,10 +119,15 @@ if __name__ == '__main__':
                             # Add the new row to the stack
                             stacks.append(row)
                         else:   # The end of the matrix
-                            # We want the columns instead of the rows, 
-                            # so, using numpy we traspose the matrix
-                            stacks = np.transpose(stacks)
-                            print("stacks:" + str(stacks), flush=True)
+                            # We want the columns instead of the rows
+                            stacks = transpose(stacks)
+                            print("stacks transpose:" + str(stacks), flush=True)
+                            # The rows should be reverted to have the first elements to remove at the end of each row
+                            stacks = revertRows(stacks)
+                            print("stacks reverted:" + str(stacks), flush=True)
+                            # Clean the unnecesary elements created during the parsing process
+                            stacks = removeElems(stacks,' ')
+                            print("stacks cleaned:" + str(stacks), flush=True)
                     else:
                         # Remove unnecesary words
                         line = line.replace("move ", '')
@@ -81,7 +135,27 @@ if __name__ == '__main__':
                         line = line.replace("to ", '')
                         # Parse the instructions
                         instructions = line.split(" ")
-                        print("Instructions found:" + str(instructions), flush=True)
+                        print("Instructions found:" + str(instructions), flush=True)                        
+                        
+                        # print("Instructions found:" + str(stacks[1][0:2]), flush=True)
+                        dest = 2
+                        orig = 1
+                        
+                        # stacks[dest].
+                        # # Check if there's available free space in the column
+                        # if(stacks[dest][0] != " "):
+                            
+                        # else:
+                        #     #Find the first available position in the destiny
+                        #     for i in range(len(stacks[dest])):
+                        #         if(stacks[dest][i] != " "):        
+                        #             stacks[dest][i-1] = stacks[orig][0]
+                        #             stacks[orig][0] = ''
+                        # # stacks[dest][0] = stacks[orig][1]
+                        # # stacks[orig][1] = ''
+                        # print("Instructions found:" + str(stacks), flush=True)
+                        break
+
 
 
         # print("sectionOverlap sum:" + str(sectionOverlap), flush=True)
