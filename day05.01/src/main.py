@@ -1,0 +1,102 @@
+# ******************************************************************************
+# * @file main.py
+# * @author Pablo Joaquim
+# * @brief The entry point
+# *
+# * @copyright NA
+# *
+# ******************************************************************************
+
+# ******************************************************************************
+# * import modules
+# ******************************************************************************
+import logging
+import signal
+
+# ******************************************************************************
+# * Objects Declarations
+# ******************************************************************************
+
+# ******************************************************************************
+# * Object and variables Definitions
+# ******************************************************************************
+running = True
+
+# ******************************************************************************
+# * Function Definitions
+# ******************************************************************************
+
+# ******************************************************************************
+# * @brief The handler for the termination signal handler
+# ******************************************************************************
+def sigintHandler(signum, frame):
+    global running
+    running = False
+    print('Signal handler called with signal', signum)
+    raise RuntimeError("Terminating...")
+
+
+# ******************************************************************************
+# * @brief The main entry point
+# ******************************************************************************
+if __name__ == '__main__':
+    signal.signal(signal.SIGINT, sigintHandler)
+
+    # These parameters are for the werkzeug embedded web server of Flask
+    # If we're using gunicorn (WSGI production web server) these parameters are not applied
+    try:
+        stacks = list()
+        print("Initializing...", flush=True)
+
+        # Open the file with the inputs
+        with open('tst/tst_input.txt') as f:
+            # Move along the lines of the input file
+            for line in f:
+                # The separator is an EOL character
+                if(line != "\n"):
+                    if("move" in line):
+                        print("Instructions found:" + str(line), flush=True)
+                        break
+                    else:
+                        line = line.replace('\n', '')   # Remove the EOL character of every line
+                        # line = line.replace('[', '')   # Replace the "-" to have only one kind of separator
+                        # line = line.replace(']', '')   # Replace the "-" to have only one kind of separator
+                        # line = line.replace('   ', '')   # Replace the "-" to have only one kind of separator
+                        # stacks = line.split(" ")
+                        row = list() 
+                        for i in range(1, len(line), 4):
+                            row.append(line[i])
+                            print("row found:" + str(row), flush=True)
+                        # print("InitSectionElf1 found:" + str(line.split(",")), flush=True)
+                        stacks.append(row)
+                        print("row found:" + str(stacks), flush=True)
+                        # initSectionElf1 = int(sections[0])
+                        # endSectionElf1 = int(sections[1])
+                        # initSectionElf2 = int(sections[2])
+                        # endSectionElf2 = int(sections[3])
+                        
+                        # print("InitSectionElf1 found:" + str(initSectionElf1), flush=True)
+                        # print("EndSectionElf1 found:" + str(endSectionElf1), flush=True)
+                        # print("InitSectionElf2 found:" + str(initSectionElf2), flush=True)
+                        # print("EndSectionElf2 found:" + str(endSectionElf2), flush=True)
+                        
+                        # if(initSectionElf2>=initSectionElf1 and initSectionElf2<=endSectionElf1):
+                        #     sectionOverlap = sectionOverlap + 1
+                        #     print("*********************sectionOverlap found 1", flush=True)
+                        # elif(endSectionElf2>=initSectionElf1 and endSectionElf2<=endSectionElf1):
+                        #     sectionOverlap = sectionOverlap + 1
+                        #     print("*********************sectionOverlap found 2", flush=True)                        
+                        # elif(initSectionElf1>=initSectionElf2 and initSectionElf1<=endSectionElf2):
+                        #     sectionOverlap = sectionOverlap + 1
+                        #     print("*********************sectionOverlap found 1", flush=True)
+                        # elif(endSectionElf1>=initSectionElf2 and endSectionElf1<=endSectionElf2):
+                        #     sectionOverlap = sectionOverlap + 1
+                        #     print("*********************sectionOverlap found 2", flush=True)    
+                        
+                    
+
+
+        # print("sectionOverlap sum:" + str(sectionOverlap), flush=True)
+        
+    except RuntimeError:
+        print("Finishing...", flush=True)
