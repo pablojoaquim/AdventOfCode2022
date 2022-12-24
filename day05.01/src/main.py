@@ -48,10 +48,10 @@ def transpose(matrix):
 # ******************************************************************************
 def revertRows(matrix):
     rows = len(matrix)
-    columns = len(matrix[0])
 
     matrix_T = []
     for i in range(rows):
+        columns = len(matrix[i])
         row = []
         for j in range(columns-1, -1, -1):
            row.append(matrix[i][j])
@@ -64,10 +64,10 @@ def revertRows(matrix):
 # ******************************************************************************
 def removeElems(matrix, e):
     rows = len(matrix)
-    columns = len(matrix[0])
 
     matrix_T = []
     for i in range(rows):
+        columns = len(matrix[i])
         row = []
         for j in range(columns):
             if(matrix[i][j] != e):
@@ -80,21 +80,22 @@ def removeElems(matrix, e):
 # * @brief Move elements in reverse order from the end of one row (origin) to the end of another (destination)
 # ******************************************************************************
 def moveElems(matrix, rowOrig, rowDest, elemCnt):
-    # rows = len(matrix)
-    # columns = len(matrix[0])
 
     for i in range(elemCnt):
         matrix[rowDest].append(matrix[rowOrig].pop())
 
-    # matrix_T = []
-    # for i in range(rows):
-    #     row = []
-    #     for j in range(columns):
-    #         if(matrix[i][j] != e):
-    #             row.append(matrix[i][j])
-    #     matrix_T.append(row)
-
-    # return matrix_T
+# ******************************************************************************
+# * @brief Return a string with the elements at the top of the stack
+# ******************************************************************************
+def getTopOfStacks(matrix):
+    rows = len(matrix)
+    
+    topOfStacks = ""
+    for i in range(rows):
+        columns = len(matrix[i])
+        topOfStacks = topOfStacks + matrix[i][columns-1]
+    
+    return topOfStacks
 
 
 # ******************************************************************************
@@ -120,7 +121,7 @@ if __name__ == '__main__':
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
-        with open('tst/tst_input.txt') as f:
+        with open('tst/input.txt') as f:
             # Move along the lines of the input file
             for line in f:
                 # The separator is an EOL character
@@ -161,8 +162,9 @@ if __name__ == '__main__':
                         moveElems(stacks, int(instructions[1])-1, int(instructions[2])-1, int(instructions[0]))
                         print("<----Stacks final:" + str(stacks), flush=True)
 
-        print("Stacks final:" + str(stacks), flush=True)
-        # print("sectionOverlap sum:" + str(sectionOverlap), flush=True)
+        
+            
+        print("Top of the Stacks:" + str(getTopOfStacks(stacks)), flush=True)
         
     except RuntimeError:
         print("Finishing...", flush=True)
