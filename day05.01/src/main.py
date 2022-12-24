@@ -77,6 +77,27 @@ def removeElems(matrix, e):
     return matrix_T
 
 # ******************************************************************************
+# * @brief Move elements in reverse order from the end of one row (origin) to the end of another (destination)
+# ******************************************************************************
+def moveElems(matrix, rowOrig, rowDest, elemCnt):
+    # rows = len(matrix)
+    # columns = len(matrix[0])
+
+    for i in range(elemCnt):
+        matrix[rowDest].append(matrix[rowOrig].pop())
+
+    # matrix_T = []
+    # for i in range(rows):
+    #     row = []
+    #     for j in range(columns):
+    #         if(matrix[i][j] != e):
+    #             row.append(matrix[i][j])
+    #     matrix_T.append(row)
+
+    # return matrix_T
+
+
+# ******************************************************************************
 # * @brief The handler for the termination signal handler
 # ******************************************************************************
 def sigintHandler(signum, frame):
@@ -135,29 +156,12 @@ if __name__ == '__main__':
                         line = line.replace("to ", '')
                         # Parse the instructions
                         instructions = line.split(" ")
-                        print("Instructions found:" + str(instructions), flush=True)                        
-                        
-                        # print("Instructions found:" + str(stacks[1][0:2]), flush=True)
-                        dest = 2
-                        orig = 1
-                        
-                        # stacks[dest].
-                        # # Check if there's available free space in the column
-                        # if(stacks[dest][0] != " "):
-                            
-                        # else:
-                        #     #Find the first available position in the destiny
-                        #     for i in range(len(stacks[dest])):
-                        #         if(stacks[dest][i] != " "):        
-                        #             stacks[dest][i-1] = stacks[orig][0]
-                        #             stacks[orig][0] = ''
-                        # # stacks[dest][0] = stacks[orig][1]
-                        # # stacks[orig][1] = ''
-                        # print("Instructions found:" + str(stacks), flush=True)
-                        break
+                        print("---->Stacks initial:" + str(stacks), flush=True)
+                        print("Instructions found:" + str(instructions), flush=True)
+                        moveElems(stacks, int(instructions[1])-1, int(instructions[2])-1, int(instructions[0]))
+                        print("<----Stacks final:" + str(stacks), flush=True)
 
-
-
+        print("Stacks final:" + str(stacks), flush=True)
         # print("sectionOverlap sum:" + str(sectionOverlap), flush=True)
         
     except RuntimeError:
