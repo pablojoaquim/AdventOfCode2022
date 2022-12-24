@@ -12,6 +12,7 @@
 # ******************************************************************************
 import logging
 import signal
+import numpy as np
 
 # ******************************************************************************
 # * Objects Declarations
@@ -54,46 +55,29 @@ if __name__ == '__main__':
             for line in f:
                 # The separator is an EOL character
                 if(line != "\n"):
-                    if("move" in line):
-                        print("Instructions found:" + str(line), flush=True)
-                        break
+                    # Check if there's no instructions in the row
+                    if("move" not in line):
+                        # Check if there's no column indexes in the row
+                        if ("1" not in line):
+                            # Remove the EOL character of every line
+                            line = line.replace('\n', '')                            
+                            
+                            # Parse the rows
+                            row = list() 
+                            for i in range(1, len(line), 4):
+                                row.append(line[i])
+                                print("row found:" + str(row), flush=True)
+                            # Add the new row to the stack
+                            stacks.append(row)
+                        else:   # The end of the matrix
+                            # We want the columns instead of the rows, 
+                            # so, using numpy we traspose the matrix
+                            stacks = np.transpose(stacks)
+                            print("stacks:" + str(stacks), flush=True)
                     else:
-                        line = line.replace('\n', '')   # Remove the EOL character of every line
-                        # line = line.replace('[', '')   # Replace the "-" to have only one kind of separator
-                        # line = line.replace(']', '')   # Replace the "-" to have only one kind of separator
-                        # line = line.replace('   ', '')   # Replace the "-" to have only one kind of separator
-                        # stacks = line.split(" ")
-                        row = list() 
-                        for i in range(1, len(line), 4):
-                            row.append(line[i])
-                            print("row found:" + str(row), flush=True)
-                        # print("InitSectionElf1 found:" + str(line.split(",")), flush=True)
-                        stacks.append(row)
-                        print("row found:" + str(stacks), flush=True)
-                        # initSectionElf1 = int(sections[0])
-                        # endSectionElf1 = int(sections[1])
-                        # initSectionElf2 = int(sections[2])
-                        # endSectionElf2 = int(sections[3])
+                        # Parse the instructions
                         
-                        # print("InitSectionElf1 found:" + str(initSectionElf1), flush=True)
-                        # print("EndSectionElf1 found:" + str(endSectionElf1), flush=True)
-                        # print("InitSectionElf2 found:" + str(initSectionElf2), flush=True)
-                        # print("EndSectionElf2 found:" + str(endSectionElf2), flush=True)
-                        
-                        # if(initSectionElf2>=initSectionElf1 and initSectionElf2<=endSectionElf1):
-                        #     sectionOverlap = sectionOverlap + 1
-                        #     print("*********************sectionOverlap found 1", flush=True)
-                        # elif(endSectionElf2>=initSectionElf1 and endSectionElf2<=endSectionElf1):
-                        #     sectionOverlap = sectionOverlap + 1
-                        #     print("*********************sectionOverlap found 2", flush=True)                        
-                        # elif(initSectionElf1>=initSectionElf2 and initSectionElf1<=endSectionElf2):
-                        #     sectionOverlap = sectionOverlap + 1
-                        #     print("*********************sectionOverlap found 1", flush=True)
-                        # elif(endSectionElf1>=initSectionElf2 and endSectionElf1<=endSectionElf2):
-                        #     sectionOverlap = sectionOverlap + 1
-                        #     print("*********************sectionOverlap found 2", flush=True)    
-                        
-                    
+                        print("Instructions found:" + str(line), flush=True)
 
 
         # print("sectionOverlap sum:" + str(sectionOverlap), flush=True)
