@@ -56,13 +56,13 @@ class Node(object):
 
         for x in self.children.values():
             current_level = lvl + 1
-            x.PrintTree(current_level) 
+            x.printTree(current_level) 
 
     "Inorder traversal algorithm to calc the size of the sleeves of the tree"
     def calcSizes(self):
         if(self.attributes == "dir"):
             for x in self.children.values():
-                self.size = self.size + x.CalcSizes()
+                self.size = self.size + x.calcSizes()
         return self.size
 
 
@@ -75,8 +75,15 @@ running = True
 # * Function Definitions
 # ******************************************************************************
 
-def calcBigDirectories (tree, maxSize=0):
-    print('calcBigDirectories')
+def calcSizeBigDirectories (node, maxSize=0):
+    sizeBigDirectories = 0
+    if(node.attributes == "dir"):
+        for x in node.children.values():
+            if (x.attributes == "dir"):
+                sizeBigDirectories = sizeBigDirectories + calcSizeBigDirectories(x, maxSize)
+        if(node.size <= maxSize):
+           sizeBigDirectories =  sizeBigDirectories + node.size
+    return sizeBigDirectories
 
     
 
@@ -101,29 +108,12 @@ if __name__ == '__main__':
     # If we're using gunicorn (WSGI production web server) these parameters are not applied
     try:
         root = Node(name = "root", attributes = "dir")
-        node = Node()
-        
-        # child = Node("A", attributes="dir", parent=root)
-        # root.add_child(child)
-        
-        # child = Node("B", attributes="dir", parent=root)
-        # root.add_child(child)
-        
-        # nodeC = Node("C", attributes="dir", parent=root)
-        # root.add_child(nodeC)
-        
-        # child = Node("pepeA", attributes="file", size=100, parent=nodeC)
-        # nodeC.add_child(child)
-        # child = Node("pepeB", attributes="file", size=100, parent=nodeC)
-        # nodeC.add_child(child)
-        # child = Node("pepeC", attributes="file", size=100, parent=nodeC)
-        # nodeC.add_child(child)
-        
+        node = Node()      
         
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
-        with open('tst/tst_input.txt') as f:
+        with open('tst/input.txt') as f:
             # Move along the lines of the input file
             for line in f:
                 # The separator is an EOL character
@@ -151,8 +141,7 @@ if __name__ == '__main__':
                         
                         elif (line.startswith("$ ls")):
                           print("command found:" + str(line), flush=True)
-                        #   child = Node("pepe", attributes="dir", parent=root)
-                        #   node.add_child(child)          
+        
                     else:
                         if (line.startswith("dir")):
                             dirName = line[4:]
@@ -165,18 +154,8 @@ if __name__ == '__main__':
         
         root.calcSizes()
         root.printTree()
-        
-        # print("The tree:" + str(tree), flush=True)
-        # node = root
-        # print("The tree:" + str(node.name), flush=True)
-        # while(1):
-        # for x in set(node.children.values()):
-            # print("The tree:" + str(x), flush=True)
-            # print("The tree:" + str(node.children.items()), flush=True)
-        # for x in range(len(node.children)):
-            
-        
-        
+        size = calcSizeBigDirectories(root, 100000)
+        print("Max Directory Size:" + str(size), flush=True)
         
     except RuntimeError:
         print("Finishing...", flush=True)
