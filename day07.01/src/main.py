@@ -47,6 +47,24 @@ class Node(object):
     def set_parent(self, parent):
         assert isinstance(parent, Node)
         self.parent = parent
+    
+    "Inorder traversal algorithm to print the content of the tree"
+    def PrintTree(self):           
+        if(self.attributes == "dir"):
+            print("- " + str(self.name) + " (dir, size="  + str(self.size) +")", flush=True)
+        else:
+            print("- " + str(self.name) + " (file, size=" + str(self.size) + ")", flush=True)
+
+        for x in self.children.values():
+            x.PrintTree() 
+
+    "Inorder traversal algorithm to calc the size of the sleeves of the tree"
+    def CalcSizes(self):
+        if(self.attributes == "dir"):
+            for x in self.children.values():
+                self.size = self.size + x.CalcSizes()
+        return self.size
+
 
 # ******************************************************************************
 # * Object and variables Definitions
@@ -79,40 +97,69 @@ if __name__ == '__main__':
         root = Node(name = "root", attributes = "dir")
         node = Node()
         
+        child = Node("A", attributes="dir", parent=root)
+        root.add_child(child)
+        
+        child = Node("B", attributes="dir", parent=root)
+        root.add_child(child)
+        
+        nodeC = Node("C", attributes="dir", parent=root)
+        root.add_child(nodeC)
+        
+        child = Node("pepeA", attributes="file", size=100, parent=nodeC)
+        nodeC.add_child(child)
+        child = Node("pepeB", attributes="file", size=100, parent=nodeC)
+        nodeC.add_child(child)
+        child = Node("pepeC", attributes="file", size=100, parent=nodeC)
+        nodeC.add_child(child)
+        
+        
         print("Initializing...", flush=True)
 
-        # Open the file with the inputs
-        with open('tst/tst_input.txt') as f:
-            # Move along the lines of the input file
-            for line in f:
-                # The separator is an EOL character
-                if(line != "\n"):
-                    # Remove the EOL character of every line
-                    line = line.replace('\n', '')
+        # # Open the file with the inputs
+        # with open('tst/tst_input.txt') as f:
+        #     # Move along the lines of the input file
+        #     for line in f:
+        #         # The separator is an EOL character
+        #         if(line != "\n"):
+        #             # Remove the EOL character of every line
+        #             line = line.replace('\n', '')
                     
-                    # Check if is a command
-                    if (line[0] == '$'):
-                        if (line.startswith("$ cd /")):
-                          print("command found:" + str(line), flush=True)
-                          node = root
-                        elif (line.startswith("$ cd ..")):
-                          print("command found:" + str(line), flush=True)
-                          if(node.parent is None):
-                              node = root
-                          else:
-                              node = node.parent
+        #             # Check if is a command
+        #             if (line[0] == '$'):
+        #                 if (line.startswith("$ cd /")):
+        #                   print("command found:" + str(line), flush=True)
+        #                   node = root
+        #                 elif (line.startswith("$ cd ..")):
+        #                   print("command found:" + str(line), flush=True)
+        #                   if(node.parent is None):
+        #                       node = root
+        #                   else:
+        #                       node = node.parent
                         
-                        elif (line.startswith("$ cd ")):
-                          print("command found:" + str(line), flush=True)
-                          node = node.children["pepe"]
+        #                 elif (line.startswith("$ cd ")):
+        #                   print("command found:" + str(line), flush=True)
+        #                   node = node.children["pepe"]
                         
-                        elif (line.startswith("$ ls")):
-                          print("command found:" + str(line), flush=True)
-                          child = Node("pepe", attributes="dir", parent=root)
-                          node.add_child(child)          
-            
+        #                 elif (line.startswith("$ ls")):
+        #                   print("command found:" + str(line), flush=True)
+        #                   child = Node("pepe", attributes="dir", parent=root)
+        #                   node.add_child(child)          
+        
+        root.CalcSizes()
+        root.PrintTree()
+        
         # print("The tree:" + str(tree), flush=True)
-        print("The tree:" + str(root), flush=True)
+        # node = root
+        # print("The tree:" + str(node.name), flush=True)
+        # while(1):
+        # for x in set(node.children.values()):
+            # print("The tree:" + str(x), flush=True)
+            # print("The tree:" + str(node.children.items()), flush=True)
+        # for x in range(len(node.children)):
+            
+        
+        
         
     except RuntimeError:
         print("Finishing...", flush=True)
