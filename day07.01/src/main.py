@@ -49,14 +49,15 @@ class Node(object):
         self.parent = parent
     
     "Inorder traversal algorithm to print the content of the tree"
-    def PrintTree(self):           
+    def PrintTree(self, lvl=0):
         if(self.attributes == "dir"):
-            print("- " + str(self.name) + " (dir, size="  + str(self.size) +")", flush=True)
+            print(" " * lvl + "- " + str(self.name) + " (dir, size="  + str(self.size) +")", flush=True)
         else:
-            print("- " + str(self.name) + " (file, size=" + str(self.size) + ")", flush=True)
+            print(" " * lvl + "- " + str(self.name) + " (file, size=" + str(self.size) + ")", flush=True)
 
         for x in self.children.values():
-            x.PrintTree() 
+            current_level = lvl + 1
+            x.PrintTree(current_level) 
 
     "Inorder traversal algorithm to calc the size of the sleeves of the tree"
     def CalcSizes(self):
