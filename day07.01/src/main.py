@@ -12,7 +12,6 @@
 # ******************************************************************************
 import logging
 import signal
-from anytree import Node, RenderTree
 
 # ******************************************************************************
 # * Objects Declarations
@@ -49,7 +48,7 @@ class Node(object):
         self.parent = parent
     
     "Inorder traversal algorithm to print the content of the tree"
-    def PrintTree(self, lvl=0):
+    def printTree(self, lvl=0):
         if(self.attributes == "dir"):
             print(" " * lvl + "- " + str(self.name) + " (dir, size="  + str(self.size) +")", flush=True)
         else:
@@ -60,7 +59,7 @@ class Node(object):
             x.PrintTree(current_level) 
 
     "Inorder traversal algorithm to calc the size of the sleeves of the tree"
-    def CalcSizes(self):
+    def calcSizes(self):
         if(self.attributes == "dir"):
             for x in self.children.values():
                 self.size = self.size + x.CalcSizes()
@@ -75,6 +74,12 @@ running = True
 # ******************************************************************************
 # * Function Definitions
 # ******************************************************************************
+
+def calcBigDirectories (tree, maxSize=0):
+    print('calcBigDirectories')
+
+    
+
 
 # ******************************************************************************
 # * @brief The handler for the termination signal handler
@@ -98,57 +103,68 @@ if __name__ == '__main__':
         root = Node(name = "root", attributes = "dir")
         node = Node()
         
-        child = Node("A", attributes="dir", parent=root)
-        root.add_child(child)
+        # child = Node("A", attributes="dir", parent=root)
+        # root.add_child(child)
         
-        child = Node("B", attributes="dir", parent=root)
-        root.add_child(child)
+        # child = Node("B", attributes="dir", parent=root)
+        # root.add_child(child)
         
-        nodeC = Node("C", attributes="dir", parent=root)
-        root.add_child(nodeC)
+        # nodeC = Node("C", attributes="dir", parent=root)
+        # root.add_child(nodeC)
         
-        child = Node("pepeA", attributes="file", size=100, parent=nodeC)
-        nodeC.add_child(child)
-        child = Node("pepeB", attributes="file", size=100, parent=nodeC)
-        nodeC.add_child(child)
-        child = Node("pepeC", attributes="file", size=100, parent=nodeC)
-        nodeC.add_child(child)
+        # child = Node("pepeA", attributes="file", size=100, parent=nodeC)
+        # nodeC.add_child(child)
+        # child = Node("pepeB", attributes="file", size=100, parent=nodeC)
+        # nodeC.add_child(child)
+        # child = Node("pepeC", attributes="file", size=100, parent=nodeC)
+        # nodeC.add_child(child)
         
         
         print("Initializing...", flush=True)
 
-        # # Open the file with the inputs
-        # with open('tst/tst_input.txt') as f:
-        #     # Move along the lines of the input file
-        #     for line in f:
-        #         # The separator is an EOL character
-        #         if(line != "\n"):
-        #             # Remove the EOL character of every line
-        #             line = line.replace('\n', '')
+        # Open the file with the inputs
+        with open('tst/tst_input.txt') as f:
+            # Move along the lines of the input file
+            for line in f:
+                # The separator is an EOL character
+                if(line != "\n"):
+                    # Remove the EOL character of every line
+                    line = line.replace('\n', '')
                     
-        #             # Check if is a command
-        #             if (line[0] == '$'):
-        #                 if (line.startswith("$ cd /")):
-        #                   print("command found:" + str(line), flush=True)
-        #                   node = root
-        #                 elif (line.startswith("$ cd ..")):
-        #                   print("command found:" + str(line), flush=True)
-        #                   if(node.parent is None):
-        #                       node = root
-        #                   else:
-        #                       node = node.parent
+                    # Check if is a command
+                    if (line[0] == '$'):
+                        if (line.startswith("$ cd /")):
+                          print("command found:" + str(line), flush=True)
+                          node = root
+                        elif (line.startswith("$ cd ..")):
+                          print("command found:" + str(line), flush=True)
+                          if(node.parent is None):
+                              node = root
+                          else:
+                              node = node.parent
                         
-        #                 elif (line.startswith("$ cd ")):
-        #                   print("command found:" + str(line), flush=True)
-        #                   node = node.children["pepe"]
+                        elif (line.startswith("$ cd ")):
+                          print("command found:" + str(line), flush=True)
+                          directory = line[5:]
+                          print("Entering in directory:" + str(directory), flush=True)
+                          node = node.children[directory]
                         
-        #                 elif (line.startswith("$ ls")):
-        #                   print("command found:" + str(line), flush=True)
-        #                   child = Node("pepe", attributes="dir", parent=root)
-        #                   node.add_child(child)          
+                        elif (line.startswith("$ ls")):
+                          print("command found:" + str(line), flush=True)
+                        #   child = Node("pepe", attributes="dir", parent=root)
+                        #   node.add_child(child)          
+                    else:
+                        if (line.startswith("dir")):
+                            dirName = line[4:]
+                            nodeAux = Node(dirName, attributes="dir", parent=node)
+                            node.add_child(nodeAux)
+                        else:
+                            fileInfo = line.split(" ")
+                            nodeAux = Node(fileInfo[1], attributes="file", size=int(fileInfo[0]), parent=node)
+                            node.add_child(nodeAux)
         
-        root.CalcSizes()
-        root.PrintTree()
+        root.calcSizes()
+        root.printTree()
         
         # print("The tree:" + str(tree), flush=True)
         # node = root
