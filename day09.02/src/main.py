@@ -24,15 +24,16 @@ import math
 running = True
 
 HEAD = 0
-KNOT1 = 1
-KNOT2 = 2
-KNOT3 = 3
-KNOT4 = 4
-KNOT5 = 5
-KNOT6 = 6
-KNOT7 = 7
-KNOT8 = 8
 KNOT9 = 9
+# KNOT1 = 1
+# KNOT2 = 2
+# KNOT3 = 3
+# KNOT4 = 4
+# KNOT5 = 5
+# KNOT6 = 6
+# KNOT7 = 7
+# KNOT8 = 8
+# KNOT9 = 9
 
 # ******************************************************************************
 # * Function Definitions
@@ -102,46 +103,15 @@ def updateRopePosition(places, rope, direction, steps):
             rope[HEAD][1] = rope[HEAD][1] - 1
 
         # print("rope:" + str(rope), flush=True)
-                
-        dist = calcDistance(rope[HEAD], rope[KNOT1])
-        if(dist >= 2):
-            processMovementRules(rope[HEAD], rope[KNOT1])
         
-        dist = calcDistance(rope[KNOT1], rope[KNOT2])
-        if(dist >= 2):
-            processMovementRules(rope[KNOT1], rope[KNOT2])
-        
-        dist = calcDistance(rope[KNOT2], rope[KNOT3])
-        if(dist >= 2):
-            processMovementRules(rope[KNOT2], rope[KNOT3])
-        
-        dist = calcDistance(rope[KNOT3], rope[KNOT4])
-        if(dist >= 2):
-            processMovementRules(rope[KNOT3], rope[KNOT4])
-        
-        dist = calcDistance(rope[KNOT4], rope[KNOT5])
-        if(dist >= 2):
-            processMovementRules(rope[KNOT4], rope[KNOT5])
-        
-        dist = calcDistance(rope[KNOT5], rope[KNOT6])
-        if(dist >= 2):
-            processMovementRules(rope[KNOT5], rope[KNOT6])
-        
-        dist = calcDistance(rope[KNOT6], rope[KNOT7])
-        if(dist >= 2):
-            processMovementRules(rope[KNOT6], rope[KNOT7])
-        
-        dist = calcDistance(rope[KNOT7], rope[KNOT8])
-        if(dist >= 2):
-            processMovementRules(rope[KNOT7], rope[KNOT8])
-        
-        dist = calcDistance(rope[KNOT8], rope[KNOT9])
-        if(dist >= 2):
-            processMovementRules(rope[KNOT8], rope[KNOT9])                
-            if (places != None):
-                if places.count(rope[KNOT9]) == 0:
-                    places.append(list(rope[KNOT9]))
-
+        for i in range(9):
+            dist = calcDistance(rope[i], rope[i+1])    
+            if(dist >= 2):
+                processMovementRules(rope[i], rope[i+1])
+                if (i+1 == KNOT9):
+                    if places.count(rope[KNOT9]) == 0:
+                        places.append(list(rope[KNOT9]))
+                        
     print("rope:" + str(rope), flush=True)
     
 # ******************************************************************************
@@ -193,9 +163,6 @@ if __name__ == '__main__':
     
             
         print("route length:" + str(len(placesVisited)), flush=True)
-        
-             
-        
         
     except RuntimeError:
         print("Finishing...", flush=True)
