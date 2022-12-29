@@ -85,7 +85,7 @@ def processMovementRules(head, tail):
             tail[1] = tail[1] + 1 
         elif(head[1] <= tail[1] - 1):
             tail[1] = tail[1] - 1
-        print("no estan en la misma:" + str(tail), flush=True)            
+        # print("no estan en la misma:" + str(tail), flush=True)            
         return   
         
     
@@ -115,7 +115,7 @@ def updateRopePosition(places, rope, direction, steps):
             
             # rope[KNOT1][0] = prevRope[HEAD][0]
             # rope[KNOT1][1] = prevRope[HEAD][1]
-        print("1 dist:" + str(dist), flush=True)
+        # print("1 dist:" + str(dist), flush=True)
         # print("1 rope:" + str(rope), flush=True)
         
         dist = calcDistance(rope[KNOT1], rope[KNOT2])
@@ -123,7 +123,7 @@ def updateRopePosition(places, rope, direction, steps):
             processMovementRules(rope[KNOT1], rope[KNOT2])
             # rope[KNOT2][0] = prevRope[KNOT1][0]
             # rope[KNOT2][1] = prevRope[KNOT1][1]    
-        print("2 dist:" + str(dist), flush=True)
+        # print("2 dist:" + str(dist), flush=True)
         # print("2 rope:" + str(rope), flush=True)
         
         dist = calcDistance(rope[KNOT2], rope[KNOT3])
@@ -131,7 +131,7 @@ def updateRopePosition(places, rope, direction, steps):
             processMovementRules(rope[KNOT2], rope[KNOT3])
             # rope[KNOT3][0] = prevRope[KNOT2][0]
             # rope[KNOT3][1] = prevRope[KNOT2][1]  
-        print("3 dist:" + str(dist), flush=True)
+        # print("3 dist:" + str(dist), flush=True)
         # print("3 rope:" + str(rope), flush=True)
         
         dist = calcDistance(rope[KNOT3], rope[KNOT4])
@@ -139,7 +139,7 @@ def updateRopePosition(places, rope, direction, steps):
             processMovementRules(rope[KNOT3], rope[KNOT4])
             # rope[KNOT4][0] = prevRope[KNOT3][0]
             # rope[KNOT4][1] = prevRope[KNOT3][1]
-        print("4 dist:" + str(dist), flush=True)
+        # print("4 dist:" + str(dist), flush=True)
         # print("4 rope:" + str(rope), flush=True)
         
         dist = calcDistance(rope[KNOT4], rope[KNOT5])
@@ -147,7 +147,7 @@ def updateRopePosition(places, rope, direction, steps):
             processMovementRules(rope[KNOT4], rope[KNOT5])
             # rope[KNOT5][0] = prevRope[KNOT4][0]
             # rope[KNOT5][1] = prevRope[KNOT4][1]    
-        print("5 dist:" + str(dist), flush=True)
+        # print("5 dist:" + str(dist), flush=True)
         # print("5 rope:" + str(rope), flush=True)
         
         dist = calcDistance(rope[KNOT5], rope[KNOT6])
@@ -155,7 +155,7 @@ def updateRopePosition(places, rope, direction, steps):
             processMovementRules(rope[KNOT5], rope[KNOT6])
             # rope[KNOT6][0] = prevRope[KNOT5][0]
             # rope[KNOT6][1] = prevRope[KNOT5][1]  
-        print("6 dist:" + str(dist), flush=True)
+        # print("6 dist:" + str(dist), flush=True)
         # print("6 rope:" + str(rope), flush=True)
         
         dist = calcDistance(rope[KNOT6], rope[KNOT7])
@@ -163,7 +163,7 @@ def updateRopePosition(places, rope, direction, steps):
             processMovementRules(rope[KNOT6], rope[KNOT7])
             # rope[KNOT7][0] = prevRope[KNOT6][0]
             # rope[KNOT7][1] = prevRope[KNOT6][1]
-        print("7 dist:" + str(dist), flush=True)
+        # print("7 dist:" + str(dist), flush=True)
         # print("7 rope:" + str(rope), flush=True)
         
         dist = calcDistance(rope[KNOT7], rope[KNOT8])
@@ -171,7 +171,7 @@ def updateRopePosition(places, rope, direction, steps):
             processMovementRules(rope[KNOT7], rope[KNOT8])
             # rope[KNOT8][0] = prevRope[KNOT7][0]
             # rope[KNOT8][1] = prevRope[KNOT7][1]    
-        print("8 dist:" + str(dist), flush=True)
+        # print("8 dist:" + str(dist), flush=True)
         # print("8 rope:" + str(rope), flush=True)
         
         dist = calcDistance(rope[KNOT8], rope[KNOT9])
@@ -180,9 +180,9 @@ def updateRopePosition(places, rope, direction, steps):
             # rope[KNOT9][0] = prevRope[KNOT8][0]
             # rope[KNOT9][1] = prevRope[KNOT8][1]                         
             if (places != None):
-                # if places.count(rope[KNOT9]) == 0:
-                places.append(list(rope[KNOT9]))
-        print("9 dist:" + str(dist), flush=True)
+                if places.count(rope[KNOT9]) == 0:
+                    places.append(list(rope[KNOT9]))
+        # print("9 dist:" + str(dist), flush=True)
         # print("9 rope:" + str(rope), flush=True)
         
         # print("headPosition:" + str(head), flush=True)
@@ -220,7 +220,7 @@ if __name__ == '__main__':
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
-        with open('tst/tst_input.txt') as f:
+        with open('tst/input.txt') as f:
             # Move along the lines of the input file
             for line in f:
                 # The separator is an EOL character
