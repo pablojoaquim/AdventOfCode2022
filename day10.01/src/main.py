@@ -17,44 +17,76 @@ import math
 # ******************************************************************************
 # * Objects Declarations
 # ******************************************************************************
+class TheControl:
+    def __init__(self):
+        self.xRegister = 1
+        self.cycles = 0
+        self.cycleToCheck = 20
+        self.signalStrength = 0
 
+    # ******************************************************************************
+    # * @brief Calculate the signal strength every 40 cycles, from the 20th cycle
+    # ******************************************************************************
+    def checkAndCalcSignalStrength(self):   
+        strength = 0
+        if(self.cycles >= self.cycleToCheck):
+            strength = self.cycleToCheck * self.xRegister
+            
+            print("----------", flush=True)
+            print("xRegister:" + str(self.xRegister), flush=True)
+            print("strength:" + str(strength), flush=True)
+            print("cycles:" + str(self.cycles), flush=True)
+            print("cycleToCheck:" + str(self.cycleToCheck), flush=True)
+            
+            self.cycleToCheck = self.cycleToCheck + 40
+            
+        self.signalStrength = self.signalStrength + strength
+
+    # ******************************************************************************
+    # * @brief Verify if the 220 cycles of operation has been elapsed
+    # ******************************************************************************
+    def checkFinishOperation(self):
+        if(self.cycles>220):
+            return True
+        return False
+    
+    # ******************************************************************************
+    # * @brief Increment the cycles counter
+    # ******************************************************************************
+    def incrementCycleCounter(self):
+        self.cycles = self.cycles + 1
+        self.checkAndCalcSignalStrength()
+
+    # ******************************************************************************
+    # * @brief Process the noop command
+    # ******************************************************************************
+    def noop(self):
+        self.incrementCycleCounter()
+                
+    # ******************************************************************************
+    # * @brief Process the addx command
+    # ******************************************************************************
+    def addx(self, sum):
+        self.incrementCycleCounter()
+        self.incrementCycleCounter()
+        self.xRegister = self.xRegister + sum
+    
+    # ******************************************************************************
+    # * @brief Get the Signal Strength value
+    # ******************************************************************************
+    def getSignalStrength(self):
+        return self.signalStrength
+        
 # ******************************************************************************
 # * Object and variables Definitions
 # ******************************************************************************
 running = True
-
-xRegister = 1
-cycles = 0
-cycleToCheck = 20
-signalStrength = 0
         
 # ******************************************************************************
 # * Function Definitions
 # ******************************************************************************
  
-# ******************************************************************************
-# * @brief The handler for the termination signal handler
-# ******************************************************************************
-def checkAndCalcSignalStrength():
-    global xRegister
-    global cycles
-    global cycleToCheck
-    
-    strength = 0
-    if(cycles >= cycleToCheck):
-        strength = cycleToCheck * xRegister
-        
-        print("----------", flush=True)
-        print("xRegister:" + str(xRegister), flush=True)
-        print("signalStrength:" + str(strength), flush=True)
-        print("cycles:" + str(cycles), flush=True)
-        print("cycleToCheck:" + str(cycleToCheck), flush=True)
-        
-        cycleToCheck = cycleToCheck + 40
-        # if(cycles>220):
-        #     break
-    return strength
- 
+
 # ******************************************************************************
 # * @brief The handler for the termination signal handler
 # ******************************************************************************
@@ -74,6 +106,8 @@ if __name__ == '__main__':
     # These parameters are for the werkzeug embedded web server of Flask
     # If we're using gunicorn (WSGI production web server) these parameters are not applied
     try:
+        theControl = TheControl()
+        
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
@@ -87,35 +121,15 @@ if __name__ == '__main__':
                     values = line.split(" ")
                     
                     if(values[0] == "noop"):
-                        cycles = cycles + 1
-                        signalStrength = signalStrength + checkAndCalcSignalStrength()
-                        # print("xRegister [" + str(cycles) + "]" + str(xRegister), flush=True)
-                        
+                        theControl.noop()
+       
                     elif(values[0] == "addx"):
-                        cycles = cycles + 1
-                        signalStrength = signalStrength + checkAndCalcSignalStrength()
-                        # print("xRegister [" + str(cycles) + "]" + str(xRegister), flush=True)
-                        cycles = cycles + 1
-                        signalStrength = signalStrength + checkAndCalcSignalStrength()
+                        theControl.addx(int(values[1]))
                         
-                        xRegister = xRegister + int(values[1])
-                        # print("xRegister [" + str(cycles) + "]" + str(xRegister), flush=True)
-                    
-                    
-                    
-                    # if(cycles >= cycleToCheck):
-                    #     signalStrength = cycleToCheck * xRegister
-                    #     print("registerX:" + str(xRegister), flush=True)
-                    #     print("signalStrength:" + str(signalStrength), flush=True)
-                    #     print("cycles:" + str(cycles), flush=True)
-                    #     print("cycleToCheck:" + str(cycleToCheck), flush=True)
-                        
-                    #     cycleToCheck = cycleToCheck + 40
-                    if(cycles>220):
+                    if(theControl.checkFinishOperation()):
                         break
-
                         
-        print("signalStrength:" + str(signalStrength), flush=True)
+        print("signalStrength:" + str(theControl.getSignalStrength()), flush=True)
         
     except RuntimeError:
         print("Finishing...", flush=True)
