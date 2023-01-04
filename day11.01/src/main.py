@@ -27,6 +27,7 @@ class Monkey:
         self.testDivider = testDivider
         self.monkeyDestTestTrue = monkeyDestTestTrue
         self.monkeyDestTestFalse = monkeyDestTestFalse
+        self.monkeybusiness = 0
         print("Monkey items: " + str(self.items), flush=True)
         print("Monkey operation: " + str(self.operation), flush=True)
         print("Monkey operand: " + str(self.operand), flush=True)
@@ -71,7 +72,7 @@ if __name__ == '__main__':
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
-        with open('tst/tst_input.txt') as f:
+        with open('tst/input.txt') as f:
             while (True):
                 line = f.readline()
                 # Check for EOF
@@ -131,6 +132,11 @@ if __name__ == '__main__':
                 monkeyIdx = monkeyIdx + 1
                 items = monkey.items
                 monkey.items = []
+                
+                # Calc how many items the monkey will inspect
+                monkey.monkeybusiness = monkey.monkeybusiness + len(items)
+                
+                # Process the rules over each item
                 print("items:" + str(items), flush=True)
                 for item in items:
                     worrylevel = item
@@ -149,10 +155,18 @@ if __name__ == '__main__':
                         monkeys[monkey.monkeyDestTestFalse].items.append(worrylevel)
                         print("worrylevel:" + str(worrylevel) + " ->Monkey: " + str(monkey.monkeyDestTestFalse), flush=True)
 
-            
             for monkey in monkeys:
                 print("Monkey items:" + str(monkey.items), flush=True)
-  
+                print("Monkeybusiness:" + str(monkey.monkeybusiness), flush=True)
+
+        # Find the two monkeys with the largest monkeybusiness
+        monkeybusinesses = []
+        for monkey in monkeys:
+            monkeybusinesses.append(monkey.monkeybusiness)
+        monkeybusinesses.sort(reverse=True)
+        print("----->monkeybusinesses:" + str(monkeybusinesses), flush=True)
+        result = monkeybusinesses[0] * monkeybusinesses[1]
+        print("----->result:" + str(result), flush=True)
         # print("route length:" + str(len(placesVisited)), flush=True)
         
     except RuntimeError:
