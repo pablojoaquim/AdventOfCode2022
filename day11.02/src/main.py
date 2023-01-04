@@ -46,7 +46,26 @@ running = True
 # ******************************************************************************
 # * Function Definitions
 # ******************************************************************************
-
+def square(num):
+ 
+    # # Handle negative input
+    # if (num < 0):
+    #     num = -num
+ 
+    # Initialize result
+    result, times = 0, num
+ 
+    while (times > 0):
+        possibleShifts, currTimes = 0, 1
+ 
+        while ((currTimes << 1) <= times):
+            currTimes = currTimes << 1
+            possibleShifts += 1
+ 
+        result = result + (num << possibleShifts)
+        times = times - currTimes
+ 
+    return result
     
 # ******************************************************************************
 # * @brief The handler for the termination signal handler
@@ -124,11 +143,15 @@ if __name__ == '__main__':
                     # Add the monkey to the list
                     monkeys.insert(monkeyIdx, monkey)
     
-    
+        supermodulo = 1
+        for monkey in monkeys:
+            supermodulo = supermodulo * monkey.testDivider
+            
         for round in range(10000):
+            print("-------------round:" + str(round), flush=True)
             monkeyIdx = 0
             for monkey in monkeys:
-                print("-------------Monkey:" + str(monkeyIdx), flush=True)
+                # print("-------------Monkey:" + str(monkeyIdx), flush=True)
                 monkeyIdx = monkeyIdx + 1
                 items = monkey.items
                 monkey.items = []
@@ -137,27 +160,28 @@ if __name__ == '__main__':
                 monkey.monkeybusiness = monkey.monkeybusiness + len(items)
                 
                 # Process the rules over each item
-                print("items:" + str(items), flush=True)
+                # print("items:" + str(items), flush=True)
                 for item in items:
-                    worrylevel = item
+                    worrylevel = item % supermodulo
                     if(monkey.operation == Monkey.OPERATION_SQUARED):
+                        # worrylevel = worrylevel * worrylevel
                         worrylevel = worrylevel * worrylevel
                     elif(monkey.operation == Monkey.OPERATION_MULTIPLY):
                         worrylevel = worrylevel * monkey.operand
                     else:
                         worrylevel = worrylevel + monkey.operand
-                    worrylevel = int(worrylevel / 1)
-                    testValue = worrylevel % monkey.testDivider                
+                        
+                    testValue = worrylevel % monkey.testDivider
                     if(testValue == 0):
                         monkeys[monkey.monkeyDestTestTrue].items.append(worrylevel)
-                        print("worrylevel:" + str(worrylevel) + " ->Monkey: " + str(monkey.monkeyDestTestTrue), flush=True)
+                        # print("worrylevel:" + str(worrylevel) + " ->Monkey: " + str(monkey.monkeyDestTestTrue), flush=True)
                     else:
                         monkeys[monkey.monkeyDestTestFalse].items.append(worrylevel)
-                        print("worrylevel:" + str(worrylevel) + " ->Monkey: " + str(monkey.monkeyDestTestFalse), flush=True)
+                        # print("worrylevel:" + str(worrylevel) + " ->Monkey: " + str(monkey.monkeyDestTestFalse), flush=True)
 
-            for monkey in monkeys:
-                print("Monkey items:" + str(monkey.items), flush=True)
-                print("Monkeybusiness:" + str(monkey.monkeybusiness), flush=True)
+            # for monkey in monkeys:
+                # print("Monkey items:" + str(monkey.items), flush=True)
+                # print("Monkeybusiness:" + str(monkey.monkeybusiness), flush=True)
 
         # Find the two monkeys with the largest monkeybusiness
         monkeybusinesses = []
