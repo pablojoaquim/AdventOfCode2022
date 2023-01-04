@@ -123,31 +123,36 @@ if __name__ == '__main__':
                     # Add the monkey to the list
                     monkeys.insert(monkeyIdx, monkey)
     
-        monkeyIdx = 0
-        for monkey in monkeys:
-            print("-------------Monkey:" + str(monkeyIdx), flush=True)
-            monkeyIdx = monkeyIdx + 1
-            items = monkey.items
-            monkey.items = []
-            print("items:" + str(items), flush=True)
-            for item in items:
-                worrylevel = item
-                if(monkey.operation == Monkey.OPERATION_SQUARED):
-                    worrylevel = worrylevel * worrylevel
-                elif(monkey.operation == Monkey.OPERATION_MULTIPLY):
-                    worrylevel = worrylevel * monkey.operand
-                else:
-                    worrylevel = worrylevel + monkey.operand
-                worrylevel = int(worrylevel / 3)
-                testValue = worrylevel % monkey.testDivider                
-                if(testValue == 0):
-                    monkeys[monkey.monkeyDestTestTrue].items.append(worrylevel)
-                    print("worrylevel:" + str(worrylevel) + " ->Monkey: " + str(monkey.monkeyDestTestTrue), flush=True)
-                else:
-                    monkeys[monkey.monkeyDestTestFalse].items.append(worrylevel)
-                    print("worrylevel:" + str(worrylevel) + " ->Monkey: " + str(monkey.monkeyDestTestFalse), flush=True)
+    
+        for round in range(20):
+            monkeyIdx = 0
+            for monkey in monkeys:
+                print("-------------Monkey:" + str(monkeyIdx), flush=True)
+                monkeyIdx = monkeyIdx + 1
+                items = monkey.items
+                monkey.items = []
+                print("items:" + str(items), flush=True)
+                for item in items:
+                    worrylevel = item
+                    if(monkey.operation == Monkey.OPERATION_SQUARED):
+                        worrylevel = worrylevel * worrylevel
+                    elif(monkey.operation == Monkey.OPERATION_MULTIPLY):
+                        worrylevel = worrylevel * monkey.operand
+                    else:
+                        worrylevel = worrylevel + monkey.operand
+                    worrylevel = int(worrylevel / 3)
+                    testValue = worrylevel % monkey.testDivider                
+                    if(testValue == 0):
+                        monkeys[monkey.monkeyDestTestTrue].items.append(worrylevel)
+                        print("worrylevel:" + str(worrylevel) + " ->Monkey: " + str(monkey.monkeyDestTestTrue), flush=True)
+                    else:
+                        monkeys[monkey.monkeyDestTestFalse].items.append(worrylevel)
+                        print("worrylevel:" + str(worrylevel) + " ->Monkey: " + str(monkey.monkeyDestTestFalse), flush=True)
 
-                
+            
+            for monkey in monkeys:
+                print("Monkey items:" + str(monkey.items), flush=True)
+  
         # print("route length:" + str(len(placesVisited)), flush=True)
         
     except RuntimeError:
