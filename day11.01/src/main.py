@@ -72,51 +72,60 @@ if __name__ == '__main__':
 
         # Open the file with the inputs
         with open('tst/tst_input.txt') as f:
-            line = f.readline().replace(':\n', '').lstrip()
-            if(line != "\n"):
-                
-                # Get the monkey index
-                values = line.split(" ")
-                monkeyIdx = int(values[1])
-                
-                # Get the monkey initial items                
-                line = f.readline().replace('\n', '').lstrip()
-                values = line.split(" ")
-                items = list(values[2:])
-                
-                # Get the operation
-                line = f.readline().replace('\n', '').lstrip()
-                values = line.split(" ")
-                if (values[3] == values[5] and values[4] == '*'):
-                    operation = Monkey.OPERATION_SQUARED
-                    operand = 0
-                elif (values[4] == '*'):
-                    operation = Monkey.OPERATION_MULTIPLY
-                    operand = values[5]
-                else:
-                    operation = Monkey.OPERATION_SUM
-                    operand = values[5]
-                
-                # Get the test
-                line = f.readline().replace('\n', '').lstrip()
-                values = line.split(" ")
-                testDivider = int(values[3])
-                
-                # Get the True condition
-                line = f.readline().replace('\n', '').lstrip()
-                values = line.split(" ")
-                monkeyDestTestTrue = int(values[5])
-                
-                # Get the False condition
-                line = f.readline().replace('\n', '').lstrip()
-                values = line.split(" ")
-                monkeyDestTestFalse = int(values[5])
-                
-                # Create the monkey object
-                monkey = Monkey(items, operation, operand, testDivider, monkeyDestTestTrue, monkeyDestTestFalse)
-                # Add the monkey to the list
-                monkeys.insert(monkeyIdx, monkey)
+            while (True):
+                line = f.readline()
+                # Check for EOF
+                if not line:
+                    break
+                if (line != "\n"):
+                    line = line.replace(':\n', '').lstrip()
+                    # Get the monkey index
+                    values = line.split(" ")
+                    monkeyIdx = int(values[1])
+                    
+                    # Get the monkey initial items                
+                    line = f.readline().replace('\n', '').replace(',', '').lstrip()
+                    values = line.split(" ")
+                    items = list(values[2:])
+                    
+                    # Get the operation
+                    line = f.readline().replace('\n', '').lstrip()
+                    values = line.split(" ")
+                    if (values[3] == values[5] and values[4] == '*'):
+                        operation = Monkey.OPERATION_SQUARED
+                        operand = 0
+                    elif (values[4] == '*'):
+                        operation = Monkey.OPERATION_MULTIPLY
+                        operand = values[5]
+                    else:
+                        operation = Monkey.OPERATION_SUM
+                        operand = values[5]
+                    
+                    # Get the test
+                    line = f.readline().replace('\n', '').lstrip()
+                    values = line.split(" ")
+                    testDivider = int(values[3])
+                    
+                    # Get the True condition
+                    line = f.readline().replace('\n', '').lstrip()
+                    values = line.split(" ")
+                    monkeyDestTestTrue = int(values[5])
+                    
+                    # Get the False condition
+                    line = f.readline().replace('\n', '').lstrip()
+                    values = line.split(" ")
+                    monkeyDestTestFalse = int(values[5])
+                    
+                    # Create the monkey object
+                    monkey = Monkey(items, operation, operand, testDivider, monkeyDestTestTrue, monkeyDestTestFalse)
+                    # Add the monkey to the list
+                    monkeys.insert(monkeyIdx, monkey)
     
+        for monkey in monkeys:
+            for item in monkey.items:
+                worrylevel = int(item)
+                if(monkey.operation == Monkey.OPERATION_MULTIPLY):
+                    worrylevel = worrylevel * monkey.operand
             
         # print("route length:" + str(len(placesVisited)), flush=True)
         
