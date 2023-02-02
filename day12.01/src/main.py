@@ -63,6 +63,22 @@ if __name__ == '__main__':
                     print("heights:" + str(heights), flush=True)
                     heightmap.append(heights)
     
+        # Look for the Starting position
+        start = 0
+        for rowIdx,row in enumerate(heightmap):
+            for colIdx,elems in enumerate(row):
+                if (elems == 'S'):
+                    start = (rowIdx, colIdx)
+                    break
+            if(start != 0):
+                break
+    
+        print(start)
+    
+        # for rowIdx in heightmap.__len__:
+        #     for elems in row:
+        #         if(elems is 'S'):
+        #             break
     
         # for round in range(20):
         #     monkeyIdx = 0
