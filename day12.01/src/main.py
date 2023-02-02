@@ -24,7 +24,46 @@ running = True
 # ******************************************************************************
 # * Function Definitions
 # ******************************************************************************
+# ******************************************************************************
+# * @brief During each step, you can move exactly one square up, down, left, or 
+# * right. To avoid needing to get out your climbing gear, the elevation of the 
+# * destination square can be at most one higher than the elevation of your current 
+# * square; that is, if your current elevation is m, you could step to elevation n, 
+# * but not to elevation o. (This also means that the elevation of the destination 
+# * square can be much lower than the elevation of your current square.)
+# ******************************************************************************
+def findNextPosition (currPosition, heightmap):
+    
+    nextPositions = []
+    row = currPosition[0]
+    column = currPosition[1]
+    currHeight = heightmap[row][column]
+    if (currHeight == 'S'):
+        currHeight = 'a'
 
+    if ((row+1)<len(heightmap)):
+        # print (heightmap[row+1][column])    
+        if (ord(heightmap[row+1][column]) <= ord(currHeight)+1):
+            nextPositions.append((row+1,column))
+
+    if (row>=1):
+        # print (heightmap[row-1][column])
+        if (ord(heightmap[row-1][column]) <= ord(currHeight)+1):
+            nextPositions.append((row-1,column))
+
+
+    if ((column+1)<len(heightmap[row])):
+        # print (heightmap[row][column+1])
+        if (ord(heightmap[row][column+1]) <= ord(currHeight)+1):
+            nextPositions.append((row,column+1))
+
+    if (column>=1):
+        # print (heightmap[row][column-1])
+        if (ord(heightmap[row][column-1]) <= ord(currHeight)+1):
+            nextPositions.append((row,column-1))
+
+    print(nextPositions)
+    
     
 # ******************************************************************************
 # * @brief The handler for the termination signal handler
@@ -74,6 +113,9 @@ if __name__ == '__main__':
                 break
     
         print(start)
+    
+        # Move through the heighmap looking for a path
+        findNextPosition(start, heightmap)
     
         # for rowIdx in heightmap.__len__:
         #     for elems in row:
