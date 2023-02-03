@@ -183,7 +183,7 @@ def getResultPath(endPoint, resultMap):
 # ******************************************************************************
 # * @brief Find the shortest path
 # ******************************************************************************
-def findShortestPath (mazemap, start, end):
+def findShortestPath (mazemap, start, end, startValue, endValue):
     # Make a copy to do not modify the original map
     maze = mazemap
     
@@ -196,19 +196,19 @@ def findShortestPath (mazemap, start, end):
     possiblePaths[start[0]][start[1]] = 1
     
     printMatrix("Path", possiblePaths)
-    print(end[0], end[1])
 
     # Move towards the maze several times from the Start till find the Exit
-    maze[start[0]][start[1]] = 1
-    maze[end[0]][end[1]] = 0
+    maze[start[0]][start[1]] = startValue
+    maze[end[0]][end[1]] = endValue
     k = 0
     while possiblePaths[end[0]][end[1]] == 0:
         k += 1
-        make_step_in_corridor(k, mazemap, possiblePaths)
+        make_step_in_multilevel(k, mazemap, possiblePaths)
     printMatrix("Path", possiblePaths)
     
     thePath = getResultPath(end, possiblePaths)
     print(thePath)
+    return thePath
    
 # ******************************************************************************
 # * @brief The handler for the termination signal handler
@@ -233,7 +233,7 @@ if __name__ == '__main__':
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
-        with open('tst/tst_input.txt') as f:
+        with open('tst/input.txt') as f:
             while (True):
                 line = f.readline()
                 # Check for EOF
@@ -243,10 +243,11 @@ if __name__ == '__main__':
                     line = line.replace('\n', '').lstrip()
                     heights = []
                     heights[:0] = line
+                    # heights = [ord(x) for x in line]
                     print("heights:" + str(heights), flush=True)
                     mazemap.append(heights)
         printMatrix("Maze", mazemap)
-            
+        
         # Look for the Starting position
         start = 0
         for rowIdx,row in enumerate(mazemap):
@@ -267,78 +268,16 @@ if __name__ == '__main__':
             if(end != 0):
                 break
 
-        findShortestPath(mazemap, start, end)
+        # The input file is made by characters, so I change it by numbers
+        new_mazemap = []
+        for row in mazemap:
+            conv = [ord(x) for x in row]
+            new_mazemap.append(conv)
+        printMatrix("new_mazemap", new_mazemap)
         
+        # Now find the path
+        path = findShortestPath(new_mazemap, start, end, ord('a'), ord('z'))
+        print(len(path)-1)
         
-
-        # # Move through the heighmap looking for a path
-        # possiblePaths.append(start)
-        # # end = False
-        # # while(end == False):
-        # cnt=3
-        # while(cnt):
-        #     for x in possiblePaths:
-        #         print(possiblePaths)
-        #         positions = findNextPosition(x, heightmap)
-        #         possiblePaths.append(positions)
-        #         # print(positions)
-        #     cnt -= 1
-        #     # for x in positions:
-        #     #     aux = [start, x]
-        #     #     possiblePaths.append(aux)
-            
-        #     #     positions = findNextPosition(x, heightmap)
-
-        
-    
-        # for rowIdx in heightmap.__len__:
-        #     for elems in row:
-        #         if(elems is 'S'):
-        #             break
-    
-        # for round in range(20):
-        #     monkeyIdx = 0
-        #     for monkey in monkeys:
-        #         print("-------------Monkey:" + str(monkeyIdx), flush=True)
-        #         monkeyIdx = monkeyIdx + 1
-        #         items = monkey.items
-        #         monkey.items = []
-                
-        #         # Calc how many items the monkey will inspect
-        #         monkey.monkeybusiness = monkey.monkeybusiness + len(items)
-                
-        #         # Process the rules over each item
-        #         print("items:" + str(items), flush=True)
-        #         for item in items:
-        #             worrylevel = item
-        #             if(monkey.operation == Monkey.OPERATION_SQUARED):
-        #                 worrylevel = worrylevel * worrylevel
-        #             elif(monkey.operation == Monkey.OPERATION_MULTIPLY):
-        #                 worrylevel = worrylevel * monkey.operand
-        #             else:
-        #                 worrylevel = worrylevel + monkey.operand
-        #             worrylevel = int(worrylevel / 3)
-        #             testValue = worrylevel % monkey.testDivider                
-        #             if(testValue == 0):
-        #                 monkeys[monkey.monkeyDestTestTrue].items.append(worrylevel)
-        #                 print("worrylevel:" + str(worrylevel) + " ->Monkey: " + str(monkey.monkeyDestTestTrue), flush=True)
-        #             else:
-        #                 monkeys[monkey.monkeyDestTestFalse].items.append(worrylevel)
-        #                 print("worrylevel:" + str(worrylevel) + " ->Monkey: " + str(monkey.monkeyDestTestFalse), flush=True)
-
-        #     for monkey in monkeys:
-        #         print("Monkey items:" + str(monkey.items), flush=True)
-        #         print("Monkeybusiness:" + str(monkey.monkeybusiness), flush=True)
-
-        # # Find the two monkeys with the largest monkeybusiness
-        # monkeybusinesses = []
-        # for monkey in monkeys:
-        #     monkeybusinesses.append(monkey.monkeybusiness)
-        # monkeybusinesses.sort(reverse=True)
-        # print("----->monkeybusinesses:" + str(monkeybusinesses), flush=True)
-        # result = monkeybusinesses[0] * monkeybusinesses[1]
-        # print("----->result:" + str(result), flush=True)
-        # print("possiblePaths:" + str(possiblePaths), flush=True)
-    
     except RuntimeError:
         print("Finishing...", flush=True)
