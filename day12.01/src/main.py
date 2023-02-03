@@ -62,9 +62,52 @@ def findNextPosition (currPosition, heightmap):
         if (ord(heightmap[row][column-1]) <= ord(currHeight)+1):
             nextPositions.append((row,column-1))
 
-    print(nextPositions)
+    # print(nextPositions)
+    return nextPositions
     
-    
+def make_step(k, sourceMap, resultMap):
+    for i in range(len(resultMap)):
+        for j in range(len(resultMap[i])):
+            if resultMap[i][j] == k:
+                if i>0 and (resultMap[i-1][j]) == 0 and int(sourceMap[i-1][j]) == 0:
+                    resultMap[i-1][j] = k + 1
+                if j>0 and (resultMap[i][j-1]) == 0 and int(sourceMap[i][j-1]) == 0:
+                    resultMap[i][j-1] = k + 1
+                if i<len(resultMap)-1 and (resultMap[i+1][j]) == 0 and int(sourceMap[i+1][j]) == 0:
+                    resultMap[i+1][j] = k + 1
+                if j<len(resultMap[i])-1 and (resultMap[i][j+1]) == 0 and int(sourceMap[i][j+1]) == 0:
+                    resultMap[i][j+1] = k + 1
+
+def getResultPath(endPoint, resultMap):
+    i, j = endPoint
+    k = resultMap[i][j]
+    the_path = [(i,j)]
+    while k > 1:
+        if i > 0 and resultMap[i - 1][j] == k-1:
+            i, j = i-1, j
+            the_path.append((i, j))
+            k-=1
+        elif j > 0 and resultMap[i][j - 1] == k-1:
+            i, j = i, j-1
+            the_path.append((i, j))
+            k-=1
+        elif i < len(resultMap) - 1 and resultMap[i + 1][j] == k-1:
+            i, j = i+1, j
+            the_path.append((i, j))
+            k-=1
+        elif j < len(resultMap[i]) - 1 and resultMap[i][j + 1] == k-1:
+            i, j = i, j+1
+            the_path.append((i, j))
+            k -= 1
+    return the_path
+
+# ******************************************************************************
+# * @brief Helper function to print a matrix nicely
+# ******************************************************************************
+def printMatrix (matrix):
+    for i in matrix:
+        print('\t'.join(map(str, i)))
+            
 # ******************************************************************************
 # * @brief The handler for the termination signal handler
 # ******************************************************************************
@@ -85,6 +128,7 @@ if __name__ == '__main__':
     # If we're using gunicorn (WSGI production web server) these parameters are not applied
     try:
         heightmap = []
+        possiblePaths = []
         
         print("Initializing...", flush=True)
 
@@ -111,11 +155,62 @@ if __name__ == '__main__':
                     break
             if(start != 0):
                 break
+        
+        # Look for the Starting position
+        end = 0
+        for rowIdx,row in enumerate(heightmap):
+            for colIdx,elems in enumerate(row):
+                if (elems == 'E'):
+                    end = (rowIdx, colIdx)
+                    break
+            if(end != 0):
+                break
     
-        print(start)
+        # print(start, end)
+        totalRows = len(heightmap)
+        totalCols = len(heightmap[0])
+
+        # Prepare the map for the possible paths
+        # Prepare a matrix with the same size of the original but filled with zeroes
+        possiblePaths = [ [0] * totalRows for _ in range(totalCols)]
+        # Mark the starting point with a value of 1
+        possiblePaths[start[0]][start[1]] = 1
+        
+        print("heights")
+        printMatrix(heightmap)
+        
+        heightmap[start[0]][start[1]] = 1
+        heightmap[end[0]][end[1]] = 0
+        k = 0
+        while possiblePaths[end[0]][end[1]] == 0:
+            k += 1
+            make_step(k, heightmap, possiblePaths)
     
-        # Move through the heighmap looking for a path
-        findNextPosition(start, heightmap)
+        # print("paths")
+        # printMatrix(possiblePaths)
+
+        thePath = getResultPath(end, possiblePaths)
+        print(thePath)
+
+        # # Move through the heighmap looking for a path
+        # possiblePaths.append(start)
+        # # end = False
+        # # while(end == False):
+        # cnt=3
+        # while(cnt):
+        #     for x in possiblePaths:
+        #         print(possiblePaths)
+        #         positions = findNextPosition(x, heightmap)
+        #         possiblePaths.append(positions)
+        #         # print(positions)
+        #     cnt -= 1
+        #     # for x in positions:
+        #     #     aux = [start, x]
+        #     #     possiblePaths.append(aux)
+            
+        #     #     positions = findNextPosition(x, heightmap)
+
+        
     
         # for rowIdx in heightmap.__len__:
         #     for elems in row:
@@ -164,7 +259,7 @@ if __name__ == '__main__':
         # print("----->monkeybusinesses:" + str(monkeybusinesses), flush=True)
         # result = monkeybusinesses[0] * monkeybusinesses[1]
         # print("----->result:" + str(result), flush=True)
-        print("heightmap:" + str(heightmap), flush=True)
-        
+        # print("possiblePaths:" + str(possiblePaths), flush=True)
+    
     except RuntimeError:
         print("Finishing...", flush=True)
