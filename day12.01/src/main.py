@@ -77,6 +77,48 @@ def findNextPosition (currPosition, heightmap):
     return nextPositions
 
 # ******************************************************************************
+# * @brief During each step, you can move exactly one square up, down, left, or 
+# * right. To avoid needing to get out your climbing gear, the elevation of the 
+# * destination square can be at most one higher than the elevation of your current 
+# * square; that is, if your current elevation is m, you could step to elevation n, 
+# * but not to elevation o. (This also means that the elevation of the destination 
+# * square can be much lower than the elevation of your current square.)
+# * 
+# * This function takes the step number k as an argument. What it does is pretty simple:
+# * Scan the matrix with a double for-loop.
+# * If we find a number that corresponds to the step number k , look at surrounding cells, and check if:
+# * 1. There is no number yet
+# * 2. The surrounding cell level is lower or at most one higer
+# * And set the k+1 to that cells.
+# ******************************************************************************
+def make_step_in_multilevel(k, sourceMap, resultMap):
+    for row in range(len(resultMap)):
+        for column in range(len(resultMap[row])):
+            if resultMap[row][column] == k:
+                # Get the current level
+                currLvl = int(sourceMap[row][column])
+                
+                if row>0:
+                    if (resultMap[row-1][column]) == 0:
+                        if (int(sourceMap[row-1][column]) <= currLvl+1):
+                            resultMap[row-1][column] = k + 1
+                        
+                if column>0:
+                    if (resultMap[row][column-1]) == 0:
+                        if (int(sourceMap[row][column-1]) <= currLvl+1):
+                            resultMap[row][column-1] = k + 1
+                        
+                if row<len(resultMap)-1:
+                    if (resultMap[row+1][column]) == 0:
+                        if (int(sourceMap[row+1][column]) <= currLvl+1):
+                            resultMap[row+1][column] = k + 1
+                        
+                if column<len(resultMap[row])-1:
+                    if (resultMap[row][column+1]) == 0:
+                        if (int(sourceMap[row][column+1]) <= currLvl+1):
+                            resultMap[row][column+1] = k + 1
+                            
+# ******************************************************************************
 # * @brief This function takes the step number k as an argument. What it does is pretty simple:
 # * Scan the matrix with a double for-loop.
 # * If we find a number that corresponds to the step number k , look at surrounding cells, and check if:
@@ -84,18 +126,29 @@ def findNextPosition (currPosition, heightmap):
 # * 2. There is no wall
 # * And set the k+1 to that cells.
 # ******************************************************************************
-def make_step(k, sourceMap, resultMap):
-    for i in range(len(resultMap)):
-        for j in range(len(resultMap[i])):
-            if resultMap[i][j] == k:
-                if i>0 and (resultMap[i-1][j]) == 0 and int(sourceMap[i-1][j]) == 0:
-                    resultMap[i-1][j] = k + 1
-                if j>0 and (resultMap[i][j-1]) == 0 and int(sourceMap[i][j-1]) == 0:
-                    resultMap[i][j-1] = k + 1
-                if i<len(resultMap)-1 and (resultMap[i+1][j]) == 0 and int(sourceMap[i+1][j]) == 0:
-                    resultMap[i+1][j] = k + 1
-                if j<len(resultMap[i])-1 and (resultMap[i][j+1]) == 0 and int(sourceMap[i][j+1]) == 0:
-                    resultMap[i][j+1] = k + 1
+def make_step_in_corridor(k, sourceMap, resultMap):
+    for row in range(len(resultMap)):
+        for column in range(len(resultMap[row])):
+            if resultMap[row][column] == k:
+                if row>0:
+                    if (resultMap[row-1][column]) == 0:
+                        if int(sourceMap[row-1][column]) == 0:
+                            resultMap[row-1][column] = k + 1
+                        
+                if column>0:
+                    if (resultMap[row][column-1]) == 0:
+                        if int(sourceMap[row][column-1]) == 0:
+                            resultMap[row][column-1] = k + 1
+                        
+                if row<len(resultMap)-1:
+                    if (resultMap[row+1][column]) == 0:
+                        if int(sourceMap[row+1][column]) == 0:
+                            resultMap[row+1][column] = k + 1
+                        
+                if column<len(resultMap[row])-1:
+                    if (resultMap[row][column+1]) == 0:
+                        if int(sourceMap[row][column+1]) == 0:
+                            resultMap[row][column+1] = k + 1
 
 # ******************************************************************************
 # * @brief This function find the shortest path based on this matrix.
@@ -130,34 +183,33 @@ def getResultPath(endPoint, resultMap):
 # ******************************************************************************
 # * @brief Find the shortest path
 # ******************************************************************************
-def findShortestPath (mazemap):
+def findShortestPath (mazemap, start, end):
     # Make a copy to do not modify the original map
     maze = mazemap
-            
+    
     # Prepare the map for the possible paths
     # Prepare a matrix with the same size of the original but filled with zeroes
     totalRows = len(maze)
     totalCols = len(maze[0])
-    possiblePaths = [ [0] * totalRows for _ in range(totalCols)]
+    possiblePaths = [ [0] * totalCols for _ in range(totalRows)]
     # Mark the starting point with a value of 1
     possiblePaths[start[0]][start[1]] = 1
-
     
+    printMatrix("Path", possiblePaths)
+    print(end[0], end[1])
+
     # Move towards the maze several times from the Start till find the Exit
     maze[start[0]][start[1]] = 1
     maze[end[0]][end[1]] = 0
     k = 0
     while possiblePaths[end[0]][end[1]] == 0:
         k += 1
-        make_step(k, mazemap, possiblePaths)
+        make_step_in_corridor(k, mazemap, possiblePaths)
     printMatrix("Path", possiblePaths)
-    
     
     thePath = getResultPath(end, possiblePaths)
     print(thePath)
-
-
-            
+   
 # ******************************************************************************
 # * @brief The handler for the termination signal handler
 # ******************************************************************************
@@ -215,7 +267,7 @@ if __name__ == '__main__':
             if(end != 0):
                 break
 
-        findShortestPath(mazemap)
+        findShortestPath(mazemap, start, end)
         
         
 
