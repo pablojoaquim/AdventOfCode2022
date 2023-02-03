@@ -42,47 +42,6 @@ def printMatrix (title, matrix):
 # * square; that is, if your current elevation is m, you could step to elevation n, 
 # * but not to elevation o. (This also means that the elevation of the destination 
 # * square can be much lower than the elevation of your current square.)
-# ******************************************************************************
-def findNextPosition (currPosition, heightmap):
-    
-    nextPositions = []
-    row = currPosition[0]
-    column = currPosition[1]
-    currHeight = heightmap[row][column]
-    if (currHeight == 'S'):
-        currHeight = 'a'
-
-    if ((row+1)<len(heightmap)):
-        # print (heightmap[row+1][column])    
-        if (ord(heightmap[row+1][column]) <= ord(currHeight)+1):
-            nextPositions.append((row+1,column))
-
-    if (row>=1):
-        # print (heightmap[row-1][column])
-        if (ord(heightmap[row-1][column]) <= ord(currHeight)+1):
-            nextPositions.append((row-1,column))
-
-
-    if ((column+1)<len(heightmap[row])):
-        # print (heightmap[row][column+1])
-        if (ord(heightmap[row][column+1]) <= ord(currHeight)+1):
-            nextPositions.append((row,column+1))
-
-    if (column>=1):
-        # print (heightmap[row][column-1])
-        if (ord(heightmap[row][column-1]) <= ord(currHeight)+1):
-            nextPositions.append((row,column-1))
-
-    # print(nextPositions)
-    return nextPositions
-
-# ******************************************************************************
-# * @brief During each step, you can move exactly one square up, down, left, or 
-# * right. To avoid needing to get out your climbing gear, the elevation of the 
-# * destination square can be at most one higher than the elevation of your current 
-# * square; that is, if your current elevation is m, you could step to elevation n, 
-# * but not to elevation o. (This also means that the elevation of the destination 
-# * square can be much lower than the elevation of your current square.)
 # * 
 # * This function takes the step number k as an argument. What it does is pretty simple:
 # * Scan the matrix with a double for-loop.
@@ -92,6 +51,7 @@ def findNextPosition (currPosition, heightmap):
 # * And set the k+1 to that cells.
 # ******************************************************************************
 def make_step_in_multilevel(k, sourceMap, resultMap):
+    success = False
     for row in range(len(resultMap)):
         for column in range(len(resultMap[row])):
             if resultMap[row][column] == k:
@@ -102,21 +62,26 @@ def make_step_in_multilevel(k, sourceMap, resultMap):
                     if (resultMap[row-1][column]) == 0:
                         if (int(sourceMap[row-1][column]) <= currLvl+1):
                             resultMap[row-1][column] = k + 1
+                            success = True
                         
                 if column>0:
                     if (resultMap[row][column-1]) == 0:
                         if (int(sourceMap[row][column-1]) <= currLvl+1):
                             resultMap[row][column-1] = k + 1
+                            success = True
                         
                 if row<len(resultMap)-1:
                     if (resultMap[row+1][column]) == 0:
                         if (int(sourceMap[row+1][column]) <= currLvl+1):
                             resultMap[row+1][column] = k + 1
+                            success = True
                         
                 if column<len(resultMap[row])-1:
                     if (resultMap[row][column+1]) == 0:
                         if (int(sourceMap[row][column+1]) <= currLvl+1):
                             resultMap[row][column+1] = k + 1
+                            success = True
+    return success
                             
 # ******************************************************************************
 # * @brief This function takes the step number k as an argument. What it does is pretty simple:
@@ -127,6 +92,8 @@ def make_step_in_multilevel(k, sourceMap, resultMap):
 # * And set the k+1 to that cells.
 # ******************************************************************************
 def make_step_in_corridor(k, sourceMap, resultMap):
+    success = False
+    
     for row in range(len(resultMap)):
         for column in range(len(resultMap[row])):
             if resultMap[row][column] == k:
@@ -134,21 +101,26 @@ def make_step_in_corridor(k, sourceMap, resultMap):
                     if (resultMap[row-1][column]) == 0:
                         if int(sourceMap[row-1][column]) == 0:
                             resultMap[row-1][column] = k + 1
+                            success = True                            
                         
                 if column>0:
                     if (resultMap[row][column-1]) == 0:
                         if int(sourceMap[row][column-1]) == 0:
                             resultMap[row][column-1] = k + 1
+                            success = True
                         
                 if row<len(resultMap)-1:
                     if (resultMap[row+1][column]) == 0:
                         if int(sourceMap[row+1][column]) == 0:
                             resultMap[row+1][column] = k + 1
+                            success = True                            
                         
                 if column<len(resultMap[row])-1:
                     if (resultMap[row][column+1]) == 0:
                         if int(sourceMap[row][column+1]) == 0:
                             resultMap[row][column+1] = k + 1
+                            success = True                            
+    return success                            
 
 # ******************************************************************************
 # * @brief This function find the shortest path based on this matrix.
@@ -194,8 +166,6 @@ def findShortestPath (mazemap, start, end, startValue, endValue):
     possiblePaths = [ [0] * totalCols for _ in range(totalRows)]
     # Mark the starting point with a value of 1
     possiblePaths[start[0]][start[1]] = 1
-    
-    printMatrix("Path", possiblePaths)
 
     # Move towards the maze several times from the Start till find the Exit
     maze[start[0]][start[1]] = startValue
@@ -203,11 +173,14 @@ def findShortestPath (mazemap, start, end, startValue, endValue):
     k = 0
     while possiblePaths[end[0]][end[1]] == 0:
         k += 1
-        make_step_in_multilevel(k, mazemap, possiblePaths)
-    printMatrix("Path", possiblePaths)
+        success = make_step_in_multilevel(k, mazemap, possiblePaths)
+        # If there's no path we shall return
+        if (success == False):
+            return []
+    # printMatrix("Path", possiblePaths)
     
     thePath = getResultPath(end, possiblePaths)
-    print(thePath)
+    # print(thePath)
     return thePath
    
 # ******************************************************************************
@@ -233,7 +206,7 @@ if __name__ == '__main__':
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
-        with open('tst/tst_input.txt') as f:
+        with open('tst/input.txt') as f:
             while (True):
                 line = f.readline()
                 # Check for EOF
@@ -244,9 +217,8 @@ if __name__ == '__main__':
                     heights = []
                     heights[:0] = line
                     # heights = [ord(x) for x in line]
-                    print("heights:" + str(heights), flush=True)
                     mazemap.append(heights)
-        printMatrix("Maze", mazemap)
+        # printMatrix("Maze", mazemap)
         
         # Look for all the Starting positions
         start = []
@@ -266,16 +238,25 @@ if __name__ == '__main__':
                 break
         
         
-        # # The input file is made by characters, so I change it by numbers
-        # new_mazemap = []
-        # for row in mazemap:
-        #     conv = [ord(x) for x in row]
-        #     new_mazemap.append(conv)
+        # The input file is made by characters, so I change it by numbers
+        new_mazemap = []
+        for row in mazemap:
+            conv = [ord(x) for x in row]
+            new_mazemap.append(conv)
         # printMatrix("new_mazemap", new_mazemap)
         
-        # # Now find the path
-        # path = findShortestPath(new_mazemap, start, end, ord('a'), ord('z'))
-        # print(len(path)-1)
+        # Now find the path
+        pathLenghts = []
+        for startIdx in start:
+            print(startIdx)
+            path = findShortestPath(new_mazemap, startIdx, end, ord('a'), ord('z'))
+            # If there's no available path the result is an empty array
+            pathLength = len(path)
+            if(pathLength>0):
+                pathLenghts.append(pathLength-1)
         
+        print(pathLenghts)
+        print("The shortest path has " + str(min(pathLenghts)) + " steps")
+                    
     except RuntimeError:
         print("Finishing...", flush=True)
