@@ -11,6 +11,7 @@
 # * import modules
 # ******************************************************************************
 import signal
+from ast import literal_eval
 
 # ******************************************************************************
 # * Objects Declarations
@@ -64,7 +65,7 @@ if __name__ == '__main__':
                     packet1 = packet1.replace('\n', '').lstrip()
                     packet2 = packet2.replace('\n', '').lstrip()
                     
-                    packets.append((packet1,packet2))
+                    packets.append((literal_eval(packet1),literal_eval(packet2)))
                      
                     # heights = []
                     # heights[:0] = line
@@ -104,6 +105,7 @@ if __name__ == '__main__':
         # path = findShortestPath(new_mazemap, start, end, ord('a'), ord('z'))
         # print(len(path)-1)
         print(packets)
+        # print(literal_eval(packets[1][0]))
         
     except RuntimeError:
         print("Finishing...", flush=True)
