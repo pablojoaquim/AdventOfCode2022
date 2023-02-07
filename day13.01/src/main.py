@@ -38,10 +38,19 @@ def comparePackets(input1, input2):
     for i in range(len(input1)):
         if i<len(input2):
             print("  - Compare ", input1[i], " vs ", input2[i] )
+            if (input1[i]<input2[i]):
+                rightOrder = True
+                print("  - Left side is smaller, so inputs are in the right order")
+                return
+                
         else:
             rightOrder = False
             print("  - Right side ran out of items, so inputs are not in the right order")
             return
+    
+    rightOrder = True
+    print("  - Left side ran out of items, so inputs are in the right order")
+    return
     
    
 # ******************************************************************************
