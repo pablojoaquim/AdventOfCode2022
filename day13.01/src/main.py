@@ -93,7 +93,7 @@ if __name__ == '__main__':
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
-        with open('tst/tst_input.txt') as f:
+        with open('tst/input.txt') as f:
             while (True):
                 packet1 = f.readline()
                 packet2 = f.readline()
