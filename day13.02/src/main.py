@@ -95,8 +95,8 @@ if __name__ == '__main__':
         packets = []
         
         # Adding the divider packets to the input data
-        packets.append("[[2]]")
-        packets.append("[[6]]")
+        packets.append(literal_eval("[[2]]"))
+        packets.append(literal_eval("[[6]]"))
         
         print("Initializing...", flush=True)
 
