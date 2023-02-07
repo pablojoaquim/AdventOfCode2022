@@ -26,32 +26,49 @@ running = True
 # * Function Definitions
 # ******************************************************************************
 def comparePackets(input1, input2):
-    rightOrder = False
+    order = "equal"
     
-    print("\n- Compare ", input1, " vs ", input2)
-    
-    if(len(input1) == 0):
-        rightOrder = True
-        print("  - Left side ran out of items, so inputs are in the right order")
-        return
-    
+    print("- Compare ", input1, " vs ", input2)
+        
     for i in range(len(input1)):
         if i<len(input2):
-            print("  - Compare ", input1[i], " vs ", input2[i] )
-            if (input1[i]<input2[i]):
-                rightOrder = True
-                print("  - Left side is smaller, so inputs are in the right order")
-                return
+            #If one of the elements is a list and the other is an integer
+            if(isinstance(input1[i], int) and isinstance(input2[i],list)):
+                aux = [input1[i]]
+                input1[i] = aux
+            elif(isinstance(input1[i], list) and isinstance(input2[i],int)):
+                aux = [input2[i]]
+                input2[i] = aux
+            
+            # If both elements are integers
+            if(isinstance(input1[i], int) and isinstance(input2[i],int)):
+                print("  - Compare ", input1[i], " vs ", input2[i] )
+                if (input1[i]<input2[i]):
+                    order = "ok"
+                    print("  - Left side is smaller, so inputs are in the right order")
+                    break
+                elif (input1[i]>input2[i]):
+                    order = "nok"
+                    print(" - Right side is smaller, so inputs are not in the right order")                    
+                    break
+                
+            # If both elements are lists
+            elif(isinstance(input1[i], list) and isinstance(input2[i],list)):
+                order = comparePackets(input1[i], input2[i])
+                if(order != "equal"):
+                    break
                 
         else:
-            rightOrder = False
+            order = "nok"
             print("  - Right side ran out of items, so inputs are not in the right order")
-            return
+            break
+            # return order
     
-    rightOrder = True
-    print("  - Left side ran out of items, so inputs are in the right order")
-    return
+    if order is "equal" and (len(input1) < len(input2) ):
+        order = "ok"
+        print("  - Left side ran out of items, so inputs are in the right order")
     
+    return order
    
 # ******************************************************************************
 # * @brief The handler for the termination signal handler
@@ -90,48 +107,13 @@ if __name__ == '__main__':
                 if (packet1 != "\n" and packet2 != "\n"):
                     packet1 = packet1.replace('\n', '').lstrip()
                     packet2 = packet2.replace('\n', '').lstrip()
-                    
                     packets.append((literal_eval(packet1),literal_eval(packet2)))
                      
-                    # heights = []
-                    # heights[:0] = line
-                    # # heights = [ord(x) for x in line]
-                    # print("heights:" + str(heights), flush=True)
-                    # mazemap.append(heights)
-        # printMatrix("Maze", mazemap)
-        
-        # # Look for the Starting position
-        # start = 0
-        # for rowIdx,row in enumerate(mazemap):
-        #     for colIdx,elems in enumerate(row):
-        #         if (elems == 'S'):
-        #             start = (rowIdx, colIdx)
-        #             break
-        #     if(start != 0):
-        #         break
-        
-        # # Look for the Ending position
-        # end = 0
-        # for rowIdx,row in enumerate(mazemap):
-        #     for colIdx,elems in enumerate(row):
-        #         if (elems == 'E'):
-        #             end = (rowIdx, colIdx)
-        #             break
-        #     if(end != 0):
-        #         break
-
-        # # The input file is made by characters, so I change it by numbers
-        # new_mazemap = []
-        # for row in mazemap:
-        #     conv = [ord(x) for x in row]
-        #     new_mazemap.append(conv)
-        # printMatrix("new_mazemap", new_mazemap)
-        
-        # # Now find the path
-        # path = findShortestPath(new_mazemap, start, end, ord('a'), ord('z'))
-        # print(len(path)-1)
         print(packets)
+        cnt = 0
         for x in packets:
+            cnt = cnt+1
+            print ("\n== Pair ", str(cnt), " ==")
             comparePackets(x[0], x[1])
         # print(literal_eval(packets[1][0]))
         
