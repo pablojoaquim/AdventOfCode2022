@@ -111,11 +111,15 @@ if __name__ == '__main__':
                      
         print(packets)
         cnt = 0
+        total = 0
         for x in packets:
             cnt = cnt+1
             print ("\n== Pair ", str(cnt), " ==")
-            comparePackets(x[0], x[1])
+            if (comparePackets(x[0], x[1]) == "ok"):
+                total = total + cnt
+            
         # print(literal_eval(packets[1][0]))
+        print(total)
         
     except RuntimeError:
         print("Finishing...", flush=True)
