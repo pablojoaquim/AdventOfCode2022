@@ -25,7 +25,24 @@ running = True
 # ******************************************************************************
 # * Function Definitions
 # ******************************************************************************
-
+def comparePackets(input1, input2):
+    rightOrder = False
+    
+    print("\n- Compare ", input1, " vs ", input2)
+    
+    if(len(input1) == 0):
+        rightOrder = True
+        print("  - Left side ran out of items, so inputs are in the right order")
+        return
+    
+    for i in range(len(input1)):
+        if i<len(input2):
+            print("  - Compare ", input1[i], " vs ", input2[i] )
+        else:
+            rightOrder = False
+            print("  - Right side ran out of items, so inputs are not in the right order")
+            return
+    
    
 # ******************************************************************************
 # * @brief The handler for the termination signal handler
@@ -105,6 +122,8 @@ if __name__ == '__main__':
         # path = findShortestPath(new_mazemap, start, end, ord('a'), ord('z'))
         # print(len(path)-1)
         print(packets)
+        for x in packets:
+            comparePackets(x[0], x[1])
         # print(literal_eval(packets[1][0]))
         
     except RuntimeError:
