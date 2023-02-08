@@ -32,7 +32,7 @@ def printMatrix (title, matrix):
     print(title)
     print('\n'.join([''.join(['{:1}'.format(item) for item in row]) 
       for row in matrix]))
-       
+      
 # ******************************************************************************
 # * @brief The handler for the termination signal handler
 # ******************************************************************************
@@ -51,11 +51,8 @@ if __name__ == '__main__':
     # These parameters are for the werkzeug embedded web server of Flask
     # If we're using gunicorn (WSGI production web server) these parameters are not applied
     try:
-        horizontal_size = 200
-        vertical_size = 40
-        cave = [['.'] * horizontal_size] * vertical_size
         paths = []
-        
+        sand_entering_point = (500,0)
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
@@ -75,12 +72,48 @@ if __name__ == '__main__':
                     paths.append(elems)
                 
         print(paths)
-                        
-                
-
+        
+        # Find the limits of the path on every direction
+        min_x = 1000
+        for path in paths:
+            for elem in path:
+               if min_x > elem[0]:
+                   min_x = elem[0]
+        max_x = 0
+        for path in paths:
+            for elem in path:
+               if max_x < elem[0]:
+                   max_x = elem[0]
+                   
+        min_y = 1000
+        for path in paths:
+            for elem in path:
+               if min_y > elem[1]:
+                   min_y = elem[1]
+        max_y = 0
+        for path in paths:
+            for elem in path:
+               if max_y < elem[1]:
+                   max_y = elem[1]
                     
-                    
+        print(min_x, min_y, max_x, max_y)
+        
+        # Draw the cave considering all the paths fits in it
+        x_extra_size = 2
+        y_extra_size = 2
+        x_size = max_x - min_x + x_extra_size
+        y_size = max_y - min_y + y_extra_size
+        # cave = [['.'] * x_size] * y_size
+        cave = [['.' for col in range(x_size)] for row in range(y_size)]
 
+        
+        x_offset = min_x - int(x_extra_size/2)
+        y_offset = min_y - int(y_extra_size/2)
+        print(sand_entering_point[0]-x_offset)
+        print(sand_entering_point[1])
+        
+        # cave[sand_entering_point[1]][sand_entering_point[0]-x_offset] = 'o'
+        cave[0][7] = 'o'
                      
         # print(packets)
         # cnt = 0
