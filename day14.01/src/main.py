@@ -32,7 +32,40 @@ def printMatrix (title, matrix):
     print(title)
     print('\n'.join([''.join(['{:1}'.format(item) for item in row]) 
       for row in matrix]))
-      
+
+# ******************************************************************************
+# * @brief Calculate the destination of a falling dust of sand, applying these rules:
+# * A unit of sand always falls down one step if possible. If the tile immediately 
+# * below is blocked (by rock or sand), the unit of sand attempts to instead move 
+# * diagonally one step down and to the left. If that tile is blocked, the unit of 
+# * sand attempts to instead move diagonally one step down and to the right. Sand 
+# * keeps moving as long as it is able to do so, at each step trying to move down, 
+# * then down-left, then down-right. If all three possible destinations are blocked, 
+# * the unit of sand comes to rest and no longer moves, at which point the next unit 
+# * of sand is created back at the source.
+# ******************************************************************************
+def calcSandFalling(cave, entryPoint):
+    falling = True
+    sandPosition = entryPoint
+    cave[sandPosition[1]-y_offset][sandPosition[0]-x_offset] = '+'
+    while(falling):
+        # Check if the position below is free
+        below = cave[sandPosition[1]-y_offset + 1][sandPosition[0]-x_offset]
+        diagLeft = cave[sandPosition[1]-y_offset + 1][sandPosition[0]-x_offset-1]
+        diagRight = cave[sandPosition[1]-y_offset + 1][sandPosition[0]-x_offset+1]
+        if (below != '#' and below != 'o'):
+            sandPosition = (sandPosition[0], sandPosition[1] + 1)
+        elif (diagLeft != '#' and diagLeft != 'o'):
+            sandPosition = (sandPosition[0]-1, sandPosition[1] + 1)
+        elif (diagRight != '#' and diagRight != 'o'):
+            sandPosition = (sandPosition[0]+1, sandPosition[1] + 1)
+        else:
+            falling = False
+            
+    cave[sandPosition[1]-y_offset][sandPosition[0]-x_offset] = 'o'
+        
+
+
 # ******************************************************************************
 # * @brief The handler for the termination signal handler
 # ******************************************************************************
@@ -52,7 +85,7 @@ if __name__ == '__main__':
     # If we're using gunicorn (WSGI production web server) these parameters are not applied
     try:
         paths = []
-        sand_entering_point = (500,0)
+        entryPoint = (500,0)
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
@@ -96,7 +129,7 @@ if __name__ == '__main__':
         y_offset = 0
         
         # Add the sand entry point
-        cave[sand_entering_point[1]-y_offset][sand_entering_point[0]-x_offset] = 'o'
+        cave[entryPoint[1]-y_offset][entryPoint[0]-x_offset] = 'o'
         
         # Draw the path
         for path in paths:
@@ -108,37 +141,33 @@ if __name__ == '__main__':
                 
                 if y1 == y2:
                     # Horizontal line
-                    print ("horizontal ", path[i]," -> ", path[i+1])
-                    print ("range " , x2, x1)
+                    # print ("horizontal ", path[i]," -> ", path[i+1])
+                    # print ("range " , x2, x1)
                     if x1<x2:
                         for i in range(x1,x2+1):
-                            print (i)
+                            # print (i)
                             cave[y1-y_offset][i-x_offset] = '#'
                     else:
                         for i in range(x2,x1+1):
-                            print (i)
+                            # print (i)
                             cave[y1-y_offset][i-x_offset] = '#'
 
                 else:
                     # Vertical line
-                    print ("vertical ", path[i]," -> ", path[i+1])
-                    print ("range " , y2, y1)
+                    # print ("vertical ", path[i]," -> ", path[i+1])
+                    # print ("range " , y2, y1)
                     if y1<y2:
                         for i in range(y1,y2+1):
-                            print (i)
+                            # print (i)
                             cave[i-y_offset][x1-x_offset] = '#'
                     else:
                         for i in range(y2,y1+1):
-                            print (i)
+                            # print (i)
                             cave[i-y_offset][x1-x_offset] = '#'
 
-        
-        
-        printMatrix("cave", cave)
-                
-            
-        
-        
+        for i in range(24):
+            calcSandFalling(cave, entryPoint)
+            printMatrix("cave", cave)
         
     except RuntimeError:
         print("Finishing...", flush=True)
