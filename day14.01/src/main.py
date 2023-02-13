@@ -43,16 +43,18 @@ def printMatrix (title, matrix):
 # * then down-left, then down-right. If all three possible destinations are blocked, 
 # * the unit of sand comes to rest and no longer moves, at which point the next unit 
 # * of sand is created back at the source.
+# * Return True if the dust of sand is still in the cave, and False if fallen out
 # ******************************************************************************
 def calcSandFalling(cave, entryPoint):
     falling = True
     sandPosition = entryPoint
     cave[sandPosition[1]-y_offset][sandPosition[0]-x_offset] = '+'
     while(falling):
-        # Check if the position below is free
+
         below = cave[sandPosition[1]-y_offset + 1][sandPosition[0]-x_offset]
         diagLeft = cave[sandPosition[1]-y_offset + 1][sandPosition[0]-x_offset-1]
         diagRight = cave[sandPosition[1]-y_offset + 1][sandPosition[0]-x_offset+1]
+        
         if (below != '#' and below != 'o'):
             sandPosition = (sandPosition[0], sandPosition[1] + 1)
         elif (diagLeft != '#' and diagLeft != 'o'):
@@ -61,8 +63,12 @@ def calcSandFalling(cave, entryPoint):
             sandPosition = (sandPosition[0]+1, sandPosition[1] + 1)
         else:
             falling = False
+        
+        if (len(cave) <= sandPosition[1] + 1):
+            return False
             
     cave[sandPosition[1]-y_offset][sandPosition[0]-x_offset] = 'o'
+    return True
         
 
 
@@ -120,14 +126,19 @@ if __name__ == '__main__':
         
         # Draw the cave considering all the paths fits in it
         x_extra_size = 2
-        y_extra_size = 2
         x_size = max_x - min_x + x_extra_size
         y_size = 10
+        
+        # cave = []
+        # for i in range(y_size):
+        #     row = ['.' for col in range(x_size)]
+        #     cave.append(row)
+        
         cave = [['.' for col in range(x_size)] for row in range(y_size)]
         # Add an offset in x to let us work with a small matrix
         x_offset = min_x - int(x_extra_size/2)
         y_offset = 0
-        
+           
         # Add the sand entry point
         cave[entryPoint[1]-y_offset][entryPoint[0]-x_offset] = 'o'
         
@@ -164,10 +175,13 @@ if __name__ == '__main__':
                         for i in range(y2,y1+1):
                             # print (i)
                             cave[i-y_offset][x1-x_offset] = '#'
-
-        for i in range(24):
-            calcSandFalling(cave, entryPoint)
+      
+        # for i in range(25):
+        cnt = 0
+        while(calcSandFalling(cave, entryPoint)):
+            cnt = cnt + 1
             printMatrix("cave", cave)
+        print(cnt)
         
     except RuntimeError:
         print("Finishing...", flush=True)
