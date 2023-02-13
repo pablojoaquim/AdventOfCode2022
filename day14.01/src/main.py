@@ -83,41 +83,20 @@ if __name__ == '__main__':
         for path in paths:
             for elem in path:
                if max_x < elem[0]:
-                   max_x = elem[0]
-                   
-        # min_y = 1000
-        # for path in paths:
-        #     for elem in path:
-        #        if min_y > elem[1]:
-        #            min_y = elem[1]
-        # max_y = 0
-        # for path in paths:
-        #     for elem in path:
-        #        if max_y < elem[1]:
-        #            max_y = elem[1]
-                    
-        # print(min_x, min_y, max_x, max_y)
+                   max_x = elem[0]    
         
         # Draw the cave considering all the paths fits in it
         x_extra_size = 2
         y_extra_size = 2
         x_size = max_x - min_x + x_extra_size
-        # y_size = max_y - min_y + y_extra_size
         y_size = 10
-        # cave = [['.'] * x_size] * y_size
         cave = [['.' for col in range(x_size)] for row in range(y_size)]
-
-        
+        # Add an offset in x to let us work with a small matrix
         x_offset = min_x - int(x_extra_size/2)
         y_offset = 0
-        # y_offset = min_y - int(y_extra_size/2)
-        # print(x_offset, y_offset)
-        # print(sand_entering_point[0]-x_offset)
-        # print(sand_entering_point[1])
         
         # Add the sand entry point
         cave[sand_entering_point[1]-y_offset][sand_entering_point[0]-x_offset] = 'o'
-        printMatrix("cave", cave)
         
         # Draw the path
         for path in paths:
