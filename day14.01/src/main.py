@@ -85,47 +85,81 @@ if __name__ == '__main__':
                if max_x < elem[0]:
                    max_x = elem[0]
                    
-        min_y = 1000
-        for path in paths:
-            for elem in path:
-               if min_y > elem[1]:
-                   min_y = elem[1]
-        max_y = 0
-        for path in paths:
-            for elem in path:
-               if max_y < elem[1]:
-                   max_y = elem[1]
+        # min_y = 1000
+        # for path in paths:
+        #     for elem in path:
+        #        if min_y > elem[1]:
+        #            min_y = elem[1]
+        # max_y = 0
+        # for path in paths:
+        #     for elem in path:
+        #        if max_y < elem[1]:
+        #            max_y = elem[1]
                     
-        print(min_x, min_y, max_x, max_y)
+        # print(min_x, min_y, max_x, max_y)
         
         # Draw the cave considering all the paths fits in it
         x_extra_size = 2
         y_extra_size = 2
         x_size = max_x - min_x + x_extra_size
-        y_size = max_y - min_y + y_extra_size
+        # y_size = max_y - min_y + y_extra_size
+        y_size = 10
         # cave = [['.'] * x_size] * y_size
         cave = [['.' for col in range(x_size)] for row in range(y_size)]
 
         
         x_offset = min_x - int(x_extra_size/2)
-        y_offset = min_y - int(y_extra_size/2)
-        print(sand_entering_point[0]-x_offset)
-        print(sand_entering_point[1])
+        y_offset = 0
+        # y_offset = min_y - int(y_extra_size/2)
+        # print(x_offset, y_offset)
+        # print(sand_entering_point[0]-x_offset)
+        # print(sand_entering_point[1])
         
-        # cave[sand_entering_point[1]][sand_entering_point[0]-x_offset] = 'o'
-        cave[0][7] = 'o'
-                     
-        # print(packets)
-        # cnt = 0
-        # total = 0
-        # for x in packets:
-        #     cnt = cnt+1
-        #     print ("\n== Pair ", str(cnt), " ==")
-        #     if (comparePackets(x[0], x[1]) == "ok"):
-        #         total = total + cnt
-            
-        # print(literal_eval(packets[1][0]))
+        # Add the sand entry point
+        cave[sand_entering_point[1]-y_offset][sand_entering_point[0]-x_offset] = 'o'
         printMatrix("cave", cave)
+        
+        # Draw the path
+        for path in paths:
+            for i in range(len(path)-1):
+                x1 = path[i][0]
+                x2 = path[i+1][0]
+                y1 = path[i][1]
+                y2 = path[i+1][1]
+                
+                if y1 == y2:
+                    # Horizontal line
+                    print ("horizontal ", path[i]," -> ", path[i+1])
+                    print ("range " , x2, x1)
+                    if x1<x2:
+                        for i in range(x1,x2+1):
+                            print (i)
+                            cave[y1-y_offset][i-x_offset] = '#'
+                    else:
+                        for i in range(x2,x1+1):
+                            print (i)
+                            cave[y1-y_offset][i-x_offset] = '#'
+
+                else:
+                    # Vertical line
+                    print ("vertical ", path[i]," -> ", path[i+1])
+                    print ("range " , y2, y1)
+                    if y1<y2:
+                        for i in range(y1,y2+1):
+                            print (i)
+                            cave[i-y_offset][x1-x_offset] = '#'
+                    else:
+                        for i in range(y2,y1+1):
+                            print (i)
+                            cave[i-y_offset][x1-x_offset] = '#'
+
+        
+        
+        printMatrix("cave", cave)
+                
+            
+        
+        
         
     except RuntimeError:
         print("Finishing...", flush=True)
