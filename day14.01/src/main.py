@@ -95,7 +95,7 @@ if __name__ == '__main__':
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
-        with open('tst/input.txt') as f:
+        with open('tst/tst_input.txt') as f:
             while (True):
                 line = f.readline()
                 
@@ -124,10 +124,17 @@ if __name__ == '__main__':
                if max_x < elem[0]:
                    max_x = elem[0]    
         
+        max_y = 0
+        for path in paths:
+            for elem in path:
+               if max_y < elem[1]:
+                   max_y = elem[1]
+                   
         # Draw the cave considering all the paths fits in it
         x_extra_size = 2
+        y_extra_size = 2
         x_size = max_x - min_x + x_extra_size
-        y_size = 170
+        y_size = max_y + y_extra_size
         
         # cave = []
         # for i in range(y_size):
@@ -180,8 +187,9 @@ if __name__ == '__main__':
         cnt = 0
         while(calcSandFalling(cave, entryPoint)):
             cnt = cnt + 1
-            printMatrix("cave", cave)
-        print(cnt)
+        
+        printMatrix("cave", cave)
+        print(cnt, "units of sand come to rest before sand starts flowing into the abyss below")
         
     except RuntimeError:
         print("Finishing...", flush=True)
