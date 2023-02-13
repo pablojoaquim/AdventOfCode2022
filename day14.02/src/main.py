@@ -93,7 +93,7 @@ if __name__ == '__main__':
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
-        with open('tst/tst_input.txt') as f:
+        with open('tst/input.txt') as f:
             while (True):
                 line = f.readline()
                 
@@ -129,11 +129,10 @@ if __name__ == '__main__':
                    max_y = elem[1]
                    
         # Draw the cave considering all the paths fits in it
-        x_extra_size = 100
+        x_extra_size = 1000
         y_extra_size = 2
         x_size = max_x - min_x + x_extra_size
         y_size = max_y + y_extra_size
-        print("extra y", y_size)
         
         cave = [['.' for col in range(x_size)] for row in range(y_size)]
         floor = ['#' for col in range(x_size)]
