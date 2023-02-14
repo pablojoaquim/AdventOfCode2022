@@ -65,7 +65,7 @@ if __name__ == '__main__':
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
-        with open('tst/tst_input.txt') as f:
+        with open('tst/input.txt') as f:
             while (True):
                 line = f.readline()
                 
@@ -95,10 +95,28 @@ if __name__ == '__main__':
         # print(reports)
         # print(len(reports))
         
-        x_min = -10
-        x_max = 30
-        y = 10
+        x_min = 0
+        x_max = 0
+        max_distance = 0
+        for report in reports:
+            if (report[0][0]<x_min):
+                x_min = report[0][0]
+            if (report[0][0]>x_max):
+                x_max = report[0][0]
+            if (report[2]>max_distance):
+                max_distance = report[2]
+
+        # print(x_min)
+        # print(x_max)
+        # print(max_distance)
         
+        
+        x_min = x_min - max_distance
+        x_max = x_max + max_distance
+        y = 2000000
+        # print(x_min)
+        # print(x_max)
+                
         positions_without_beacons = set()
         
         for report in reports:
@@ -113,91 +131,8 @@ if __name__ == '__main__':
                     if (distance_to_point <= distance):
                         positions_without_beacons.add(point)
                     
-        print(positions_without_beacons)
+        # print(positions_without_beacons)
         print(len(positions_without_beacons))
-            
-            # sensor = report[key]
-        
-        # print(paths)
-        
-        # # Find the limits of the path on every direction
-        # min_x = 1000
-        # for path in paths:
-        #     for elem in path:
-        #        if min_x > elem[0]:
-        #            min_x = elem[0]
-        # max_x = 0
-        # for path in paths:
-        #     for elem in path:
-        #        if max_x < elem[0]:
-        #            max_x = elem[0]    
-        
-        # max_y = 0
-        # for path in paths:
-        #     for elem in path:
-        #        if max_y < elem[1]:
-        #            max_y = elem[1]
-                   
-        # # Draw the cave considering all the paths fits in it
-        # x_extra_size = 2
-        # y_extra_size = 2
-        # x_size = max_x - min_x + x_extra_size
-        # y_size = max_y + y_extra_size
-        
-        # # cave = []
-        # # for i in range(y_size):
-        # #     row = ['.' for col in range(x_size)]
-        # #     cave.append(row)
-        
-        # cave = [['.' for col in range(x_size)] for row in range(y_size)]
-        # # Add an offset in x to let us work with a small matrix
-        # x_offset = min_x - int(x_extra_size/2)
-        # y_offset = 0
-           
-        # # Add the sand entry point
-        # cave[entryPoint[1]-y_offset][entryPoint[0]-x_offset] = 'o'
-        
-        # # Draw the path
-        # for path in paths:
-        #     for i in range(len(path)-1):
-        #         x1 = path[i][0]
-        #         x2 = path[i+1][0]
-        #         y1 = path[i][1]
-        #         y2 = path[i+1][1]
-                
-        #         if y1 == y2:
-        #             # Horizontal line
-        #             # print ("horizontal ", path[i]," -> ", path[i+1])
-        #             # print ("range " , x2, x1)
-        #             if x1<x2:
-        #                 for i in range(x1,x2+1):
-        #                     # print (i)
-        #                     cave[y1-y_offset][i-x_offset] = '#'
-        #             else:
-        #                 for i in range(x2,x1+1):
-        #                     # print (i)
-        #                     cave[y1-y_offset][i-x_offset] = '#'
-
-        #         else:
-        #             # Vertical line
-        #             # print ("vertical ", path[i]," -> ", path[i+1])
-        #             # print ("range " , y2, y1)
-        #             if y1<y2:
-        #                 for i in range(y1,y2+1):
-        #                     # print (i)
-        #                     cave[i-y_offset][x1-x_offset] = '#'
-        #             else:
-        #                 for i in range(y2,y1+1):
-        #                     # print (i)
-        #                     cave[i-y_offset][x1-x_offset] = '#'
-      
-        # # for i in range(25):
-        # cnt = 0
-        # while(calcSandFalling(cave, entryPoint)):
-        #     cnt = cnt + 1
-        
-        # printMatrix("cave", cave)
-        # print(cnt, "units of sand come to rest before sand starts flowing into the abyss below")
         
     except RuntimeError:
         print("Finishing...", flush=True)
