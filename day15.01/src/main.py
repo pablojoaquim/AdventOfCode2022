@@ -61,7 +61,7 @@ if __name__ == '__main__':
     # These parameters are for the werkzeug embedded web server of Flask
     # If we're using gunicorn (WSGI production web server) these parameters are not applied
     try:
-        reports = {}
+        reports = []
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
@@ -85,11 +85,38 @@ if __name__ == '__main__':
                     beacon_x = line[8].replace('x=', '').lstrip()
                     beacon_y = line[9].replace('y=', '').lstrip()
                     beacon = (int(beacon_x), int(beacon_y))
-                                      
-                    # Add the new sensor:beacon values to the reports
-                    reports[sensor] = (beacon, calcManhattanDistance(sensor, beacon))
+
+                    distance = calcManhattanDistance(sensor, beacon)
                     
-        print(reports)
+                    # Add the new sensor:beacon values to the reports
+                    reports.append([sensor, beacon, distance])
+                    # reports[sensor] = (beacon, calcManhattanDistance(sensor, beacon))
+                    
+        # print(reports)
+        # print(len(reports))
+        
+        x_min = -10
+        x_max = 30
+        y = 10
+        
+        positions_without_beacons = set()
+        
+        for report in reports:
+            sensor = report[0]
+            beacon = report[1]
+            distance = report[2]
+            
+            for x in range(x_min,x_max):
+                point = (x,y)
+                if (point != beacon):
+                    distance_to_point = calcManhattanDistance(sensor, point)
+                    if (distance_to_point <= distance):
+                        positions_without_beacons.add(point)
+                    
+        print(positions_without_beacons)
+        print(len(positions_without_beacons))
+            
+            # sensor = report[key]
         
         # print(paths)
         
