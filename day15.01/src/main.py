@@ -34,43 +34,14 @@ def printMatrix (title, matrix):
       for row in matrix]))
 
 # ******************************************************************************
-# * @brief Calculate the destination of a falling dust of sand, applying these rules:
-# * A unit of sand always falls down one step if possible. If the tile immediately 
-# * below is blocked (by rock or sand), the unit of sand attempts to instead move 
-# * diagonally one step down and to the left. If that tile is blocked, the unit of 
-# * sand attempts to instead move diagonally one step down and to the right. Sand 
-# * keeps moving as long as it is able to do so, at each step trying to move down, 
-# * then down-left, then down-right. If all three possible destinations are blocked, 
-# * the unit of sand comes to rest and no longer moves, at which point the next unit 
-# * of sand is created back at the source.
-# * Return True if the dust of sand is still in the cave, and False if fallen out
+# * @brief Calculates the Manhattan distance, which is a distance metric between 
+# * two points in a N dimensional vector space. It is the sum of the lengths of 
+# * the projections of the line segment between the points onto the coordinate 
+# * axes. In simple terms, it is the sum of absolute difference between the 
+# * measures in all dimensions of two points.
 # ******************************************************************************
-def calcSandFalling(cave, entryPoint):
-    falling = True
-    sandPosition = entryPoint
-    cave[sandPosition[1]-y_offset][sandPosition[0]-x_offset] = '+'
-    while(falling):
-
-        below = cave[sandPosition[1]-y_offset + 1][sandPosition[0]-x_offset]
-        diagLeft = cave[sandPosition[1]-y_offset + 1][sandPosition[0]-x_offset-1]
-        diagRight = cave[sandPosition[1]-y_offset + 1][sandPosition[0]-x_offset+1]
-        
-        if (below != '#' and below != 'o'):
-            sandPosition = (sandPosition[0], sandPosition[1] + 1)
-        elif (diagLeft != '#' and diagLeft != 'o'):
-            sandPosition = (sandPosition[0]-1, sandPosition[1] + 1)
-        elif (diagRight != '#' and diagRight != 'o'):
-            sandPosition = (sandPosition[0]+1, sandPosition[1] + 1)
-        else:
-            falling = False
-        
-        if (len(cave) <= sandPosition[1] + 1):
-            return False
-            
-    cave[sandPosition[1]-y_offset][sandPosition[0]-x_offset] = 'o'
-    return True
-        
-
+def calcManhattanDistance(p, q):
+    return sum(abs(val1-val2) for val1, val2 in zip(p,q))
 
 # ******************************************************************************
 # * @brief The handler for the termination signal handler
@@ -114,9 +85,9 @@ if __name__ == '__main__':
                     beacon_x = line[8].replace('x=', '').lstrip()
                     beacon_y = line[9].replace('y=', '').lstrip()
                     beacon = (int(beacon_x), int(beacon_y))
-                    
+                                      
                     # Add the new sensor:beacon values to the reports
-                    reports[sensor] = beacon
+                    reports[sensor] = (beacon, calcManhattanDistance(sensor, beacon))
                     
         print(reports)
         
