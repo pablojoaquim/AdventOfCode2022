@@ -140,14 +140,14 @@ if __name__ == '__main__':
         # print(max_distance)
         
         
-        x_min = x_min - max_distance
-        x_max = x_max + max_distance
+        # x_min = x_min - max_distance
+        # x_max = x_max + max_distance
         # y = 2000000
         # print(x_min)
         # print(x_max)
         # y=10
-        # x_min=0
-        # x_max=20
+        x_min=0
+        x_max=20
         y_min=0
         y_max=20
          
@@ -160,6 +160,10 @@ if __name__ == '__main__':
             # print (len(positionsWithoutBeacon))
         
         printMatrix(None, graph)
+        for y in range(len(graph)):
+            for x in range(len(graph[y])):
+                if (graph[y][x] == '.'):
+                    print("x =", x," y =", y)
         
     except RuntimeError:
         print("Finishing...", flush=True)
