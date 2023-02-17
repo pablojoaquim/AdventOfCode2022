@@ -44,6 +44,26 @@ def calcManhattanDistance(p, q):
     return sum(abs(val1-val2) for val1, val2 in zip(p,q))
 
 # ******************************************************************************
+# * @brief Read all the sensors and obtain the positions in a row without beacons
+# ******************************************************************************
+def getPositionsWithoutBeacons(dataset, x_min, x_max, y):
+    positions_without_beacons = set()
+        
+    for data in dataset:
+        sensor = data[0]
+        beacon = data[1]
+        distance = data[2]
+        
+        for x in range(x_min,x_max):
+            point = (x,y)
+            if (point != beacon):
+                distance_to_point = calcManhattanDistance(sensor, point)
+                if (distance_to_point <= distance):
+                    positions_without_beacons.add(point)
+                    
+    return (positions_without_beacons)
+                        
+# ******************************************************************************
 # * @brief The handler for the termination signal handler
 # ******************************************************************************
 def sigintHandler(signum, frame):
@@ -65,7 +85,7 @@ if __name__ == '__main__':
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
-        with open('tst/input.txt') as f:
+        with open('tst/tst_input.txt') as f:
             while (True):
                 line = f.readline()
                 
@@ -113,26 +133,12 @@ if __name__ == '__main__':
         
         x_min = x_min - max_distance
         x_max = x_max + max_distance
-        y = 2000000
+        # y = 2000000
         # print(x_min)
         # print(x_max)
+        y=10
                 
-        positions_without_beacons = set()
-        
-        for report in reports:
-            sensor = report[0]
-            beacon = report[1]
-            distance = report[2]
-            
-            for x in range(x_min,x_max):
-                point = (x,y)
-                if (point != beacon):
-                    distance_to_point = calcManhattanDistance(sensor, point)
-                    if (distance_to_point <= distance):
-                        positions_without_beacons.add(point)
-                    
-        # print(positions_without_beacons)
-        print(len(positions_without_beacons))
+        print (len(getPositionsWithoutBeacons(reports, x_min, x_max, y)))
         
     except RuntimeError:
         print("Finishing...", flush=True)
