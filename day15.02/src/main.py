@@ -92,7 +92,7 @@ if __name__ == '__main__':
         print("Initializing...", flush=True)
 
         # Open the file with the inputs
-        with open('tst/tst_input.txt') as f:
+        with open('tst/input.txt') as f:
             while (True):
                 line = f.readline()
                 
@@ -131,42 +131,42 @@ if __name__ == '__main__':
             if (report[0][0]>x_max):
                 x_max = report[0][0]
             if (report[2]>max_distance):
-                max_distance = report[2]
-
-        # print(x_min)
-        # print(x_max)
-        # print(max_distance)
+                max_distance = report[2]    
         
-        
-        x_min = x_min - max_distance
-        x_max = x_max + max_distance
+        # x_min = x_min - max_distance
+        # x_max = x_max + max_distance
         # y = 2000000
         # print(x_min)
         # print(x_max)
         # y=10
-        # x_min=0
-        # x_max=4000000
+        x_min=0
+        x_max=4000000
         y_min=0
-        # y_max=4000000
-        y_max=40
+        y_max=4000000
+        
+        # x_min=0
+        # x_max=20
+        # y_min=0
+        # y_max=20
          
         graph = []        
         for y in range(y_min,y_max):
             positionsWithoutBeacon, rowGraph = getPositionsWithoutBeacons(reports, x_min, x_max, y)
             graph.append(rowGraph)
+            if ('.' in rowGraph):
+                break
             # print(graph)
             # print (len(getPositionsWithoutBeacons(reports, x_min, x_max, y)))
-            # print (len(positionsWithoutBeacon))
         
-        printMatrix(None, graph)
+        # printMatrix(None, graph)
         
-        # # Look for the distress signal
-        # for y in range(len(graph)):
-        #     for x in range(len(graph[y])):
-        #         if (graph[y][x] == '.'):
-        #             print("x =", x," y =", y)
-        #             distress_signal = 4000000 * x + y
-        #             print("distress signal =", distress_signal)
+        # Look for the distress signal
+        for y in range(len(graph)):
+            for x in range(len(graph[y])):
+                if (graph[y][x] == '.'):
+                    print("x =", x," y =", y)
+                    distress_signal = 4000000 * x + y
+                    print("distress signal =", distress_signal)
         
         
     except RuntimeError:
