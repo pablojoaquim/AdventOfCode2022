@@ -62,13 +62,11 @@ def getPositionsWithoutBeacons(dataset, x_min, x_max, y):
                 graph[x] = 'S'
             elif (point == beacon):
                 graph[x] = 'B'
-            # print(sensor, beacon, point)
-            elif (point != beacon):
+            elif (graph[x] == '.'):
                 distance_to_point = calcManhattanDistance(sensor, point)
                 if (distance_to_point <= distance):
                     positions_without_beacons.add(point)
-                    if(graph[x] == '.'):
-                        graph[x] = '#'
+                    graph[x] = '#'
                 
     return (positions_without_beacons, graph)
                             
@@ -140,16 +138,17 @@ if __name__ == '__main__':
         # print(max_distance)
         
         
-        # x_min = x_min - max_distance
-        # x_max = x_max + max_distance
+        x_min = x_min - max_distance
+        x_max = x_max + max_distance
         # y = 2000000
         # print(x_min)
         # print(x_max)
         # y=10
-        x_min=0
-        x_max=20
+        # x_min=0
+        # x_max=4000000
         y_min=0
-        y_max=20
+        # y_max=4000000
+        y_max=40
          
         graph = []        
         for y in range(y_min,y_max):
@@ -160,12 +159,14 @@ if __name__ == '__main__':
             # print (len(positionsWithoutBeacon))
         
         printMatrix(None, graph)
-        for y in range(len(graph)):
-            for x in range(len(graph[y])):
-                if (graph[y][x] == '.'):
-                    print("x =", x," y =", y)
-                    distress_signal = 4000000 * x + y
-                    print("distress signal =", distress_signal)
+        
+        # # Look for the distress signal
+        # for y in range(len(graph)):
+        #     for x in range(len(graph[y])):
+        #         if (graph[y][x] == '.'):
+        #             print("x =", x," y =", y)
+        #             distress_signal = 4000000 * x + y
+        #             print("distress signal =", distress_signal)
         
         
     except RuntimeError:
