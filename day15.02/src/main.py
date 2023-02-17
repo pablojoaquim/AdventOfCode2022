@@ -164,6 +164,9 @@ if __name__ == '__main__':
             for x in range(len(graph[y])):
                 if (graph[y][x] == '.'):
                     print("x =", x," y =", y)
+                    distress_signal = 4000000 * x + y
+                    print("distress signal =", distress_signal)
+        
         
     except RuntimeError:
         print("Finishing...", flush=True)
