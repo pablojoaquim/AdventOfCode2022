@@ -41,48 +41,82 @@ def printMatrix (title, matrix):
 # * axes. In simple terms, it is the sum of absolute difference between the 
 # * measures in all dimensions of two points.
 # ******************************************************************************
-def manhattan_distance(x1, y1, x2, y2):
-    return abs(x1 - x2) + abs(y1 - y2)
+def manhatten_distance(a_x, a_y, b_x, b_y):
+    return abs(a_x - b_x) + abs(a_y - b_y)
 
 # ******************************************************************************
-# * @brief Return a list of the points with a Manhattan distance from a center point
+# * @brief check_field_empty
 # ******************************************************************************
-def find_points_with_distance(x, y, distance):
-    points = set()
-    for i in range(-distance, distance+1):
-        j = distance - abs(i)
-        points.add((x+i, y+j))
-        points.add((x+i, y-j))
-    return list(points)
+def check_field_empty(y_index, x_index, sensors, beacons):
+    for sensor in sensors:
+        if manhatten_distance(x_index, y_index, sensor[0], sensor[1]) <= sensor[2]:
+            return False
+    for beacon in beacons:
+        if y_index == beacon[1] and x_index == beacon[0]:
+            return False
+    return True
 
-# # ******************************************************************************
-# # * @brief Read all the sensors and obtain the positions in a row without beacons
-# # ******************************************************************************
-# def getPositionsWithoutBeacons(dataset, x_min, x_max, y):
-#     positions_without_beacons = set()
-#     graph = ['.']*(x_max-x_min)
-        
-#     for data in dataset:
-#         sensor = data[0]
-#         beacon = data[1]
-#         distance = data[2]
-        
-#         for x in range(x_min,x_max):
-#             point = (x,y)
-#             if (point == sensor):
-#                 graph[x] = 'S'
-#             elif (point == beacon):
-#                 graph[x] = 'B'
-#             elif (graph[x] == '.'):
-#                 distance_to_point = calcManhattanDistance(sensor, point)
-#                 if (distance_to_point <= distance):
-#                     positions_without_beacons.add(point)
-#                     graph[x] = '#'
-#                 elif(distance_to_point == distance+1):
-#                     graph[x] = '+'
-                
-#     return (positions_without_beacons, graph)
-                            
+# ******************************************************************************
+# * @brief traverse the border zone looking for the only point which is not part
+# * of any region
+# ******************************************************************************
+def traverse_border(sensor_x, sensor_y, distance, max_zone, sensors, beacons):
+    if sensor_y - distance < 0:
+        half_width = - (sensor_y - distance)
+    else: 
+        half_width = 0
+    #top
+    top = sensor_y-distance-1
+    if top > 0:
+        if check_field_empty(top, sensor_x, sensors, beacons):
+            print('omg finally', 'y', top, 'x', sensor_x)
+            print('solution', sensor_x * 4000000 + top)
+            return True
+    #bottom
+    bottom = sensor_y+distance+1
+    if bottom <= max_zone + 1:
+        if check_field_empty(bottom, sensor_x, sensors, beacons):
+            print('omg finally', 'y', bottom, 'x', sensor_x)
+            print('solution', sensor_x * 4000000 + bottom)
+            return True
+    #left and right
+    for y in range(max(0, sensor_y - distance), min(sensor_y + distance + 1, max_zone+1)):
+        # left 
+        left = sensor_x - half_width - 1
+        if left > 0:
+            if check_field_empty(y, left, sensors, beacons):
+                print('omg finally', 'y', y, 'x', left)
+                print('solution', left * 4000000 + y)
+                return True
+        right = sensor_x + half_width + 1
+        if right <= max_zone+1:
+            if check_field_empty(y, right, sensors, beacons):
+                print('omg finally', 'y', y, 'x', right)
+                print('solution', right * 4000000 + y)
+                return True
+        if y < sensor_y:
+            half_width += 1
+        else:
+            half_width -= 1
+    return False
+
+# ******************************************************************************
+# * @brief save_no_beacon_zone
+# ******************************************************************************
+def save_no_beacon_zone(grid, sensor_x, sensor_y, distance, y_index):
+    if sensor_y - distance < 0:
+        half_width = - (sensor_y - distance)
+    else:
+        half_width = 0
+    for y in range(sensor_y - distance, sensor_y + distance + 1):
+        if y == y_index:
+            for x in range(sensor_x - half_width, sensor_x + half_width + 1):
+                grid.add(x)
+        if y < sensor_y:
+            half_width += 1
+        else:
+            half_width -= 1
+                           
 # ******************************************************************************
 # * @brief The handler for the termination signal handler
 # ******************************************************************************
@@ -104,106 +138,28 @@ if __name__ == '__main__':
         reports = []
         print("Initializing...", flush=True)
 
-        # Open the file with the inputs
         with open('tst/input.txt') as f:
-            while (True):
-                line = f.readline()
-                
-                # Check for EOF
-                if not line:
-                    break
-                if (line != "\n"):
-                    line = line.replace('\n', '').lstrip()
-                    line = line.replace(',', '').lstrip()
-                    line = line.replace(':', '').lstrip()
-                    line = line.split(" ")
-                    
-                    sensor_x = line[2].replace('x=', '').lstrip()
-                    sensor_y = line[3].replace('y=', '').lstrip()
-                    sensor = (int(sensor_x), int(sensor_y))
-                    
-                    beacon_x = line[8].replace('x=', '').lstrip()
-                    beacon_y = line[9].replace('y=', '').lstrip()
-                    beacon = (int(beacon_x), int(beacon_y))
+            lines = f.readlines()
+            lines = [entry.strip() for entry in lines]
 
-                    distance = calcManhattanDistance(sensor, beacon)
-                    
-                    # Add the new sensor:beacon values to the reports
-                    reports.append([sensor, beacon, distance])
-                    # reports[sensor] = (beacon, calcManhattanDistance(sensor, beacon))
-                    
-        print(reports)
-        # print(len(reports))
-        
-        # x_min = 0
-        # x_max = 0
-        # max_distance = 0
-        # for report in reports:
-        #     if (report[0][0]<x_min):
-        #         x_min = report[0][0]
-        #     if (report[0][0]>x_max):
-        #         x_max = report[0][0]
-        #     if (report[2]>max_distance):
-        #         max_distance = report[2]
+        sensors = []
+        beacons = []
+        for i, line in enumerate(lines):
+            #print(line)
+            parts_with_numbers = [word for word in line.split(' ') if '='in word]
+            parts_with_numbers_cleaned = [word.replace(',', '').replace(':', '') for word in parts_with_numbers]
+            sensor_x, sensor_y, beacon_x, beacon_y = list(map(lambda x: int(x.split('=')[1]), parts_with_numbers_cleaned))
 
-        # print(x_min)
-        # print(x_max)
-        # print(max_distance)
-        
-        
-        # x_min = x_min - max_distance
-        # x_max = x_max + max_distance
-        # y = 2000000
-        # print(x_min)
-        # print(x_max)
-        # y=10
-        
-        # x_min=0
-        # x_max=4000000
-        # y_min=0
-        # y_max=4000000
-        
-        # x_min=0
-        # x_max=20
-        # y_min=0
-        # y_max=20
-         
-        # graph = []        
-        # for y in range(y_min,y_max):
-        #     positionsWithoutBeacon, rowGraph = getPositionsWithoutBeacons(reports, x_min, x_max, y)
-        #     graph.append(rowGraph)
-        # #     # if ('.' in rowGraph):
-        # #     #     break
-        # #     # print(graph)
-        # #     # print (len(getPositionsWithoutBeacons(reports, x_min, x_max, y)))
-        # #     # print (len(positionsWithoutBeacon))
-        
-        # printMatrix(None, graph)
-        
-        # # Look for the distress signal
-        # for y in range(len(graph)):
-        #     for x in range(len(graph[y])):
-        #         if (graph[y][x] == '.'):
-        #             print("x =", x," y =", y)
-        #             distress_signal = 4000000 * x + y
-        #             print("distress signal =", distress_signal)
-        
-        for report in reports:
-            sensor = report[0]
-            distance = report[2]
-            points = find_points_with_distance(sensor[0], sensor[1], distance)
-            print(f"Puntos: {points}")
+            distance_to_beacon = abs(sensor_x - beacon_x) + abs(sensor_y - beacon_y)
             
-            # dataset = []
-            # dataset.append(report)
-            # graph = []
-            # for y in range(y_min,y_max):
-            #     positionsWithoutBeacon, rowGraph = getPositionsWithoutBeacons(dataset, x_min, x_max, y)
-            #     graph.append(rowGraph)        
-            # printMatrix(None, graph)
-            # print('\n')
-            # print('\n')
-        
+            sensors.append([sensor_x, sensor_y, distance_to_beacon])
+            beacons.append([beacon_x, beacon_y])
+
+        max_zone=4000000
+        for i, sensor in enumerate(sensors):
+            print('sensor', i)
+            if traverse_border(sensor[0], sensor[1], sensor[2], max_zone, sensors, beacons):
+                break
         
     except RuntimeError:
         print("Finishing...", flush=True)
